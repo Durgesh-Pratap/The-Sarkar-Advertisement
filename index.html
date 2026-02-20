@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Sarkar Advertisements Workspace</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#F37A20">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <style>
+        :root {
+            --primary: #F37A20; 
+            --primary-hover: #D96915;
+            --success: #10B981;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --bg: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg); color: var(--text-main);
+            padding: 15px; line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; flex: 1; width: 100%;}
+
+        /* Header */
+        header {
+            text-align: center; margin-bottom: 15px; padding: 20px 15px 10px 15px;
+            background: var(--card-bg); border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-top: 5px solid var(--primary);
+        }
+        .brand-logo { max-width: 120px; margin-bottom: 10px; border-radius: 8px;}
+        .brand-title { font-size: 1.5rem; color: var(--primary); font-weight: 800; text-transform: uppercase; margin-bottom: 5px; line-height: 1.2;}
+        .brand-tagline { color: #111; font-weight: 600; font-size: 0.85rem; margin-bottom: 10px;}
+        
+        /* Navigation Tabs */
+        .tabs { display: flex; flex-wrap: wrap; gap: 5px; background: #E5E7EB; padding: 5px; border-radius: 12px; margin-bottom: 20px; }
+        .tab-btn {
+            flex: 1 1 calc(50% - 5px); padding: 10px 5px; font-size: 0.85rem; font-weight: bold; color: #4B5563;
+            background: transparent; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center;
+        }
+        .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        @media (min-width: 600px) { .tab-btn { flex: 1; font-size: 0.9rem; } }
+
+        /* General UI */
+        .app-section { display: none; }
+        .app-section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .card { background: var(--card-bg); padding: 15px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
+        
+        button { padding: 12px; font-size: 15px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:active { background-color: var(--primary-hover); }
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-info { background-color: var(--info); color: white; }
+        .btn-secondary { background-color: #E5E7EB; color: #374151; }
+        button:disabled { background-color: #D1D5DB; cursor: not-allowed; }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; color: #374151;}
+        .input-group input, .input-group textarea { width: 100%; padding: 12px; border: 1px solid #D1D5DB; border-radius: 8px; font-size: 16px; font-family: inherit;}
+        
+        /* Dashboard */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .dash-card { background: #fff; padding: 20px 10px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid var(--primary); text-align: center; }
+        .dash-value { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin: 5px 0; }
+        .dash-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+
+        /* Route Mapper */
+        #cameraInput { display: none; }
+        .file-label { background-color: var(--primary); color: white; display: block; padding: 14px; text-align: center; border-radius: 12px; font-weight: 600;}
+        #previewImg { width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; margin-bottom: 10px; background: #000; }
+        .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .photo-card { background: #FFFFFF; border-radius: 12px; overflow: hidden; border: 1px solid #E5E7EB; }
+        .photo-card img { width: 100%; height: 180px; object-fit: cover; }
+        .photo-details { padding: 12px; font-size: 0.85rem; color: #6B7280; }
+
+        /* Invoice UI */
+        .invoice-table-wrapper { overflow-x: auto; margin-bottom: 15px; border: 1px solid #E5E7EB; border-radius: 8px;}
+        .invoice-table { width: 100%; min-width: 400px; border-collapse: collapse; text-align: left; }
+        .invoice-table th, .invoice-table td { padding: 10px; border-bottom: 1px solid #E5E7EB; font-size: 0.9rem;}
+        .invoice-table th { background: #F9FAFB; color: #374151; }
+        .item-row input { padding: 8px; border: 1px solid #D1D5DB; border-radius: 4px; width: 100%; }
+        .delete-row-btn { background: #FEE2E2; color: #991B1B; padding: 6px; font-size: 0.8rem; border-radius: 6px;}
+        .totals-box { background: #F9FAFB; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: right; }
+        .totals-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+        .totals-row.grand { font-size: 1.2rem; font-weight: bold; color: var(--primary); border-top: 2px solid #E5E7EB; padding-top: 8px; }
+
+        .invoice-history-card { border: 1px solid #E5E7EB; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: #fff;}
+        .invoice-history-card h4 { color: var(--primary); margin-bottom: 5px; }
+        .invoice-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .edit-badge { background: #FEF3C7; color: #D97706; padding: 8px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 15px; display: none; }
+
+        #status { display: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: 500; margin-bottom: 15px; }
+        #status.show { display: block; }
+        #status.info { background-color: #EFF6FF; color: #1D4ED8; }
+        #status.success { background-color: #D1FAE5; color: #065F46; }
+        #status.error { background-color: #FEE2E2; color: #991B1B; }
+
+        .footer-brand { text-align: center; margin-top: 30px; padding-bottom: 10px; font-size: 0.85rem; color: #6B7280; font-weight: 600; }
+        .footer-brand span { color: var(--primary); font-weight: 800; }
+
+        /* Print Styles */
+        #printableInvoice { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            body { background: white; padding: 0; }
+            #printableInvoice, #printableInvoice * { visibility: visible; }
+            #printableInvoice { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; font-family: Arial, sans-serif; color: #000; }
+            .print-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #F37A20; padding-bottom: 20px; margin-bottom: 20px;}
+            .print-header h1 { color: #F37A20; margin: 0; font-size: 28px; text-transform: uppercase;}
+            .print-header p { margin: 2px 0; font-size: 14px; color: #333;}
+            .print-meta { display: flex; justify-content: space-between; margin-bottom: 30px; }
+            .print-box { border: 1px solid #ddd; padding: 15px; width: 48%; border-radius: 8px;}
+            .print-box h3 { margin-top: 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 16px;}
+            .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+            .print-table th, .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+            .print-table th { background: #f4f4f4; color: #333; font-weight: bold; }
+            .print-totals { float: right; width: 300px; }
+            .print-totals-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px;}
+            .print-totals-row.grand { font-size: 18px; font-weight: bold; border-top: 2px solid #000; padding-top: 10px; color: #F37A20;}
+            .print-footer { clear: both; margin-top: 50px; text-align: right; }
+            .print-sign { border-top: 1px solid #000; display: inline-block; padding-top: 5px; width: 200px; text-align: center;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+        <div class="brand-title">The Sarkar Advertisements</div>
+        <div class="brand-tagline">Grow Your Business Adverties with us</div>
+    </header>
+
+    <div class="tabs" id="navTabs">
+        <button class="tab-btn active" data-target="dashboard">📊 Dashboard</button>
+        <button class="tab-btn" data-target="mapper">📸 Route Mapper</button>
+        <button class="tab-btn" data-target="invoice">🧾 Invoice Form</button>
+        <button class="tab-btn" data-target="history">📂 Saved Invoices</button>
+    </div>
+
+    <div id="status"></div>
+
+    <div id="dashboardSection" class="app-section active">
+        <div class="card">
+            <h3 style="margin-bottom: 15px; color: var(--primary);">Business Overview</h3>
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <div class="dash-label">Total Revenue</div>
+                    <div class="dash-value" id="dashRevenue">₹0</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-label">Total GST Coll.</div>
+                    <div class="dash-value" id="dashGST" style="color:#10B981;">₹0</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-label">Total Invoices</div>
+                    <div class="dash-value" id="dashInvCount" style="color:#3B82F6;">0</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-label">Route Photos</div>
+                    <div class="dash-value" id="dashPhotoCount" style="color:#8B5CF6;">0</div>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="switchTab('invoice')">✨ Create New Invoice</button>
+        </div>
+    </div>
+
+    <div id="mapperSection" class="app-section">
+        <div class="card">
+            <h3 style="margin-bottom: 15px;">📸 Capture Route Photos</h3>
+            <label for="cameraInput" class="file-label">Open Camera & Take Photo</label>
+            <input type="file" id="cameraInput" accept="image/*" capture="environment">
+        </div>
+
+        <div id="previewSection" class="card" style="display: none; border: 2px solid var(--primary);">
+            <h3 style="margin-bottom: 10px; color: var(--primary);">Review Photo & Location</h3>
+            <img id="previewImg" src="">
+            <div class="input-group"><label>Details:</label><input type="text" id="locationInput" placeholder="Fetching GPS..."></div>
+            <button id="savePhotoBtn" class="btn-primary">💾 Save Photo to Route</button>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold;">
+                <span>Captured Locations</span><span style="background: var(--primary); color: white; padding: 2px 10px; border-radius: 20px;" id="photoCount">0</span>
+            </div>
+            <div id="gallery" class="gallery-grid"></div>
+            <button id="generateBtn" class="btn-success" style="margin-top: 15px;" disabled>📄 Export Route to PPT</button>
+            <button id="clearPhotosBtn" class="btn-danger" style="margin-top: 10px;">🗑️ Clear Route Data</button>
+        </div>
+    </div>
+
+    <div id="invoiceSection" class="app-section">
+        <div class="card">
+            <div id="editModeBanner" class="edit-badge">✏️ EDITING INVOICE MODE</div>
+            <h3 style="margin-bottom: 15px; color: var(--primary);" id="invoiceFormTitle">🧾 New Formal Invoice</h3>
+            
+            <div class="input-group">
+                <label>Client Name:</label><input type="text" id="invClientName" placeholder="e.g., Acme Corp">
+            </div>
+            <div class="input-group">
+                <label>Client Address:</label><textarea id="invClientAddress" rows="2" placeholder="Full Address"></textarea>
+            </div>
+            <div class="input-group">
+                <label>Client GSTIN:</label><input type="text" id="invClientGST" placeholder="22AAAAA0000A1Z5">
+            </div>
+            
+            <hr style="border:0; border-top:1px solid #E5E7EB; margin:20px 0;">
+            <h4 style="margin-bottom: 10px;">Line Items</h4>
+            
+            <div class="invoice-table-wrapper">
+                <table class="invoice-table">
+                    <thead><tr><th style="width: 45%;">Description</th><th style="width: 20%;">Qty</th><th style="width: 25%;">Rate (₹)</th><th style="width: 10%;">Del</th></tr></thead>
+                    <tbody id="invoiceItemsBody"></tbody>
+                </table>
+            </div>
+            <button onclick="addInvoiceRow()" class="btn-secondary" style="margin-bottom: 20px;">+ Add Item</button>
+
+            <div class="input-group">
+                <label>GST Percentage (%):</label><input type="number" id="invGSTRate" value="18" onchange="calculateInvoice()">
+            </div>
+
+            <div class="totals-box">
+                <div class="totals-row"><span>Subtotal:</span> <span id="lblSubtotal">₹0.00</span></div>
+                <div class="totals-row"><span>GST Amount:</span> <span id="lblGST">₹0.00</span></div>
+                <div class="totals-row grand"><span>Grand Total:</span> <span id="lblTotal">₹0.00</span></div>
+            </div>
+
+            <button onclick="saveInvoice()" id="btnSaveInvoice" class="btn-primary">💾 Save Invoice Securely</button>
+            <button onclick="cancelEditMode()" id="btnCancelEdit" class="btn-secondary" style="margin-top: 10px; display: none;">❌ Cancel Edit & Clear Form</button>
+        </div>
+    </div>
+
+    <div id="historySection" class="app-section">
+        <div class="card">
+            <h3 style="margin-bottom: 15px; color: var(--primary);">📂 Invoice History</h3>
+            <button onclick="exportInvoicesCSV()" class="btn-info" style="margin-bottom: 15px;">⬇️ Export All to Excel (CSV)</button>
+            <div id="invoiceHistoryList"></div>
+        </div>
+    </div>
+
+    <div class="footer-brand">Powered by <span>CRMTECH</span></div>
+</div>
+
+<div id="printableInvoice">
+    <div class="print-header">
+        <div>
+            <h1>The Sarkar Advertisements</h1>
+            <p>Grow Your Business Adverties with us</p>
+            <p><strong>GSTIN:</strong> 09XXXXXXXXXXXXX (Your Company GST)</p>
+            <p><strong>Address:</strong> Your Business Address Line, City, State, PIN</p>
+        </div>
+        <div style="text-align: right;">
+            <h2 style="color: #555; margin-bottom: 5px;">TAX INVOICE</h2>
+            <p><strong>Invoice No:</strong> <span id="printInvNo">INV-0001</span></p>
+            <p><strong>Date:</strong> <span id="printInvDate">dd/mm/yyyy</span></p>
+        </div>
+    </div>
+    <div class="print-meta">
+        <div class="print-box">
+            <h3>Billed To:</h3>
+            <p><strong id="printClientName">Client Name</strong></p>
+            <p id="printClientAddress">Client Address</p>
+            <p><strong>GSTIN:</strong> <span id="printClientGST">N/A</span></p>
+        </div>
+    </div>
+    <table class="print-table">
+        <thead><tr><th>S.No</th><th>Item Description</th><th>Quantity</th><th>Rate (₹)</th><th>Amount (₹)</th></tr></thead>
+        <tbody id="printItemsBody"></tbody>
+    </table>
+    <div class="print-totals">
+        <div class="print-totals-row"><span>Subtotal:</span> <strong id="printSubtotal">₹0.00</strong></div>
+        <div class="print-totals-row"><span>GST (<span id="printGSTRate">18</span>%):</span> <strong id="printGSTAmount">₹0.00</strong></div>
+        <div class="print-totals-row grand"><span>Total Amount:</span> <strong id="printGrandTotal">₹0.00</strong></div>
+        <p style="text-align: right; font-size: 12px; margin-top: 5px;">(Words: <span id="printWords"></span>)</p>
+    </div>
+    <div class="print-footer"><div class="print-sign"><strong>For The Sarkar Advertisements</strong><br><br><br>Authorized Signatory</div></div>
+</div>
+
+<script>
+    // ==========================================
+    // Core Application & DB Logic
+    // ==========================================
+    const DB_NAME = 'SarkarWorkspaceDB', DB_VERSION = 2;
+    let db;
+    let editingInvoiceId = null;
+    let invItems = [];
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => switchTab(e.target.dataset.target));
+    });
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.tab-btn[data-target="${tabName}"]`).classList.add('active');
+        
+        document.querySelectorAll('.app-section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(tabName + 'Section').classList.add('active');
+
+        if(tabName === 'dashboard') loadDashboardData();
+        if(tabName === 'history') loadInvoiceHistory();
+    }
+
+    function showStatus(msg, type = 'info') {
+        const el = document.getElementById('status');
+        el.textContent = msg; el.className = `show ${type}`;
+        setTimeout(() => el.className = '', 4000);
+    }
+
+    function initDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onupgradeneeded = (e) => {
+                db = e.target.result;
+                if (!db.objectStoreNames.contains('photos')) db.createObjectStore('photos', { keyPath: 'id', autoIncrement: true });
+                if (!db.objectStoreNames.contains('invoices')) db.createObjectStore('invoices', { keyPath: 'id', autoIncrement: true });
+            };
+            request.onsuccess = (e) => { 
+                db = e.target.result; 
+                loadDashboardData(); updateGalleryUI(); addInvoiceRow(); resolve(); 
+            };
+        });
+    }
+
+    function putToDB(store, data) {
+        return new Promise((resolve) => {
+            const req = db.transaction([store], 'readwrite').objectStore(store).put(data);
+            req.onsuccess = () => resolve(req.result);
+        });
+    }
+
+    function getAllFromDB(store) {
+        return new Promise((resolve) => {
+            db.transaction([store], 'readonly').objectStore(store).getAll().onsuccess = (e) => resolve(e.target.result);
+        });
+    }
+    
+    function getOneFromDB(store, id) {
+        return new Promise((resolve) => {
+            db.transaction([store], 'readonly').objectStore(store).get(id).onsuccess = (e) => resolve(e.target.result);
+        });
+    }
+
+    function deleteFromDB(store, id) {
+        return new Promise((resolve) => {
+            db.transaction([store], 'readwrite').objectStore(store).delete(id).onsuccess = () => resolve();
+        });
+    }
+
+    // ==========================================
+    // 📊 DASHBOARD LOGIC
+    // ==========================================
+    async function loadDashboardData() {
+        const invoices = await getAllFromDB('invoices');
+        const photos = await getAllFromDB('photos');
+        
+        let totalRev = 0, totalGST = 0;
+        invoices.forEach(inv => {
+            totalRev += inv.totals.total;
+            totalGST += inv.totals.gstAmount;
+        });
+
+        document.getElementById('dashRevenue').innerText = `₹${totalRev.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
+        document.getElementById('dashGST').innerText = `₹${totalGST.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
+        document.getElementById('dashInvCount').innerText = invoices.length;
+        document.getElementById('dashPhotoCount').innerText = photos.length;
+    }
+
+    // ==========================================
+    // 🧾 INVOICE GENERATOR & EDIT LOGIC
+    // ==========================================
+    function addInvoiceRow() {
+        invItems.push({ id: Date.now() + Math.random(), desc: '', qty: 1, rate: 0 });
+        renderInvoiceTable();
+    }
+
+    function removeInvoiceRow(id) {
+        invItems = invItems.filter(i => i.id !== id);
+        if(invItems.length === 0) addInvoiceRow(); 
+        else renderInvoiceTable();
+    }
+
+    function updateItem(id, field, value) {
+        const item = invItems.find(i => i.id === id);
+        if(item) { item[field] = field === 'desc' ? value : parseFloat(value) || 0; calculateInvoice(); }
+    }
+
+    function renderInvoiceTable() {
+        const tbody = document.getElementById('invoiceItemsBody');
+        tbody.innerHTML = '';
+        invItems.forEach(item => {
+            tbody.innerHTML += `
+                <tr class="item-row">
+                    <td><input type="text" placeholder="Item Name" value="${item.desc}" onkeyup="updateItem(${item.id}, 'desc', this.value)"></td>
+                    <td><input type="number" min="1" value="${item.qty}" onchange="updateItem(${item.id}, 'qty', this.value)"></td>
+                    <td><input type="number" min="0" value="${item.rate}" onchange="updateItem(${item.id}, 'rate', this.value)"></td>
+                    <td style="text-align:center;"><button class="delete-row-btn" onclick="removeInvoiceRow(${item.id})">✖</button></td>
+                </tr>`;
+        });
+        calculateInvoice();
+    }
+
+    function calculateInvoice() {
+        let subtotal = 0;
+        invItems.forEach(item => subtotal += (item.qty * item.rate));
+        const gstRate = parseFloat(document.getElementById('invGSTRate').value) || 0;
+        const gstAmount = subtotal * (gstRate / 100);
+        const total = subtotal + gstAmount;
+
+        document.getElementById('lblSubtotal').innerText = `₹${subtotal.toFixed(2)}`;
+        document.getElementById('lblGST').innerText = `₹${gstAmount.toFixed(2)}`;
+        document.getElementById('lblTotal').innerText = `₹${total.toFixed(2)}`;
+        return { subtotal, gstRate, gstAmount, total };
+    }
+
+    async function saveInvoice() {
+        const clientName = document.getElementById('invClientName').value.trim();
+        if(!clientName) return showStatus("❌ Client Name is required!", "error");
+        
+        const finalItems = invItems.filter(i => i.desc.trim() !== '' && i.rate > 0);
+        if(finalItems.length === 0) return showStatus("❌ Add at least one valid item!", "error");
+
+        const totals = calculateInvoice();
+        let invoiceNo = "INV-" + Math.floor(1000 + Math.random() * 9000);
+        let date = new Date().toLocaleDateString();
+        
+        if (editingInvoiceId) {
+            const oldInv = await getOneFromDB('invoices', editingInvoiceId);
+            invoiceNo = oldInv.invoiceNo;
+            date = oldInv.date;
+        }
+
+        const invData = {
+            invoiceNo: invoiceNo, date: date,
+            clientName: clientName, clientAddress: document.getElementById('invClientAddress').value,
+            clientGST: document.getElementById('invClientGST').value,
+            items: finalItems, totals: totals
+        };
+
+        if (editingInvoiceId) invData.id = editingInvoiceId; 
+
+        await putToDB('invoices', invData);
+        showStatus(editingInvoiceId ? "✅ Invoice Updated!" : "✅ Invoice Created!", "success");
+        cancelEditMode(); 
+    }
+
+    async function editInvoice(id) {
+        const inv = await getOneFromDB('invoices', id);
+        if(!inv) return;
+
+        editingInvoiceId = inv.id;
+        document.getElementById('invClientName').value = inv.clientName;
+        document.getElementById('invClientAddress').value = inv.clientAddress;
+        document.getElementById('invClientGST').value = inv.clientGST;
+        document.getElementById('invGSTRate').value = inv.totals.gstRate;
+        
+        invItems = inv.items; 
+        renderInvoiceTable();
+
+        document.getElementById('editModeBanner').style.display = 'block';
+        document.getElementById('invoiceFormTitle').innerText = `✏️ Editing: ${inv.invoiceNo}`;
+        document.getElementById('btnSaveInvoice').innerText = "💾 Update Invoice Securely";
+        document.getElementById('btnCancelEdit').style.display = 'block';
+
+        switchTab('invoice'); 
+        window.scrollTo(0, 0);
+    }
+
+    function cancelEditMode() {
+        editingInvoiceId = null;
+        document.getElementById('invClientName').value = '';
+        document.getElementById('invClientAddress').value = '';
+        document.getElementById('invClientGST').value = '';
+        invItems = []; addInvoiceRow();
+        
+        document.getElementById('editModeBanner').style.display = 'none';
+        document.getElementById('invoiceFormTitle').innerText = "🧾 New Formal Invoice";
+        document.getElementById('btnSaveInvoice').innerText = "💾 Save Invoice Securely";
+        document.getElementById('btnCancelEdit').style.display = 'none';
+    }
+
+    // ==========================================
+    // 📂 HISTORY & EXPORT LOGIC
+    // ==========================================
+    async function loadInvoiceHistory() {
+        const list = document.getElementById('invoiceHistoryList');
+        const invoices = await getAllFromDB('invoices');
+        list.innerHTML = '';
+        if(invoices.length === 0) return list.innerHTML = '<p style="text-align:center;">No saved invoices.</p>';
+
+        invoices.reverse().forEach(inv => {
+            list.innerHTML += `
+                <div class="invoice-history-card">
+                    <div style="display:flex; justify-content:space-between;">
+                        <h4>${inv.clientName}</h4><strong style="color:var(--primary)">₹${inv.totals.total.toFixed(2)}</strong>
+                    </div>
+                    <p><strong>No:</strong> ${inv.invoiceNo} | <strong>Date:</strong> ${inv.date}</p>
+                    <div class="invoice-actions">
+                        <button class="btn-primary" style="padding: 8px; font-size: 0.9rem;" onclick='printInvoice(${JSON.stringify(inv)})'>🖨️ PDF / Print</button>
+                        <button class="btn-secondary" style="padding: 8px; font-size: 0.9rem; flex: 0.5;" onclick="editInvoice(${inv.id})">✏️ Edit</button>
+                        <button class="btn-danger" style="padding: 8px; font-size: 0.9rem; flex: 0.3;" onclick="deleteInvoice(${inv.id})">🗑️</button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    async function deleteInvoice(id) {
+        if(confirm("Delete this invoice forever?")) {
+            await deleteFromDB('invoices', id);
+            loadInvoiceHistory(); showStatus("🗑️ Invoice deleted.", "success");
+        }
+    }
+
+    async function exportInvoicesCSV() {
+        const invoices = await getAllFromDB('invoices');
+        if(invoices.length === 0) return showStatus("No invoices to export", "info");
+        
+        let csvContent = "data:text/csv;charset=utf-8,Invoice No,Date,Client Name,GSTIN,Subtotal,GST Amount,Grand Total\n";
+        invoices.forEach(inv => {
+            const row = `"${inv.invoiceNo}","${inv.date}","${inv.clientName}","${inv.clientGST}","${inv.totals.subtotal}","${inv.totals.gstAmount}","${inv.totals.total}"`;
+            csvContent += row + "\n";
+        });
+        
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Sarkar_Invoices_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+
+    function numberToWords(num) {
+        if(num === 0) return "Zero";
+        const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen '];
+        const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
+        if ((num = num.toString()).length > 9) return 'overflow';
+        let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+        if (!n) return; let str = '';
+        str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
+        str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
+        str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
+        str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
+        str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
+        return str.trim() + " Rupees Only";
+    }
+
+    function printInvoice(inv) {
+        document.getElementById('printInvNo').innerText = inv.invoiceNo;
+        document.getElementById('printInvDate').innerText = inv.date;
+        document.getElementById('printClientName').innerText = inv.clientName;
+        document.getElementById('printClientAddress').innerText = inv.clientAddress || 'N/A';
+        document.getElementById('printClientGST').innerText = inv.clientGST || 'N/A';
+        const tbody = document.getElementById('printItemsBody'); tbody.innerHTML = '';
+        inv.items.forEach((item, index) => {
+            tbody.innerHTML += `<tr><td>${index + 1}</td><td>${item.desc}</td><td>${item.qty}</td><td>₹${item.rate.toFixed(2)}</td><td>₹${(item.qty * item.rate).toFixed(2)}</td></tr>`;
+        });
+        document.getElementById('printSubtotal').innerText = `₹${inv.totals.subtotal.toFixed(2)}`;
+        document.getElementById('printGSTRate').innerText = inv.totals.gstRate;
+        document.getElementById('printGSTAmount').innerText = `₹${inv.totals.gstAmount.toFixed(2)}`;
+        document.getElementById('printGrandTotal').innerText = `₹${inv.totals.total.toFixed(2)}`;
+        document.getElementById('printWords').innerText = numberToWords(Math.round(inv.totals.total));
+        window.print();
+    }
+
+    // ==========================================
+    // 📸 PHOTO MAPPER LOGIC (Upgraded Parallel Geolocation)
+    // ==========================================
+    let currentDraftPhoto = { image: null, lat: null, lng: null };
+
+    document.getElementById('cameraInput').addEventListener('change', async (e) => {
+        if (e.target.files.length === 0) return;
+        
+        showStatus("⏳ Processing image & fetching GPS...", "info");
+        document.getElementById('locationInput').value = "Acquiring GPS coordinates...";
+        document.getElementById('savePhotoBtn').disabled = true;
+        document.getElementById('previewSection').style.display = 'block';
+        
+        const file = e.target.files[0];
+
+        // Process Image
+        const compressPromise = new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const scale = 800 / img.width;
+                    canvas.width = 800; canvas.height = img.height * scale;
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.6));
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Process GPS at the exact same time
+        const gpsPromise = new Promise(resolve => {
+            if (!navigator.geolocation) {
+                resolve({ error: "GPS not supported by browser." });
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+                (err) => {
+                    let msg = "GPS error.";
+                    if(err.code === 1) msg = "Location permission denied.";
+                    if(err.code === 2) msg = "Device GPS turned off.";
+                    if(err.code === 3) msg = "GPS request timed out.";
+                    resolve({ error: msg });
+                },
+                { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+            );
+        });
+
+        // Wait for both to finish
+        const [imgBase64, gpsResult] = await Promise.all([compressPromise, gpsPromise]);
+
+        currentDraftPhoto.image = imgBase64;
+        document.getElementById('previewImg').src = imgBase64;
+
+        if (gpsResult.error) {
+            currentDraftPhoto.lat = null;
+            currentDraftPhoto.lng = null;
+            document.getElementById('locationInput').value = "⚠️ " + gpsResult.error + " (Type manually)";
+            showStatus("⚠️ " + gpsResult.error, "error");
+        } else {
+            currentDraftPhoto.lat = gpsResult.lat;
+            currentDraftPhoto.lng = gpsResult.lng;
+            document.getElementById('locationInput').value = `Lat: ${gpsResult.lat.toFixed(5)}, Lng: ${gpsResult.lng.toFixed(5)}`;
+            showStatus("✅ Location found!", "success");
+        }
+        
+        document.getElementById('savePhotoBtn').disabled = false;
+    });
+
+    document.getElementById('savePhotoBtn').addEventListener('click', async () => {
+        await putToDB('photos', { image: currentDraftPhoto.image, lat: currentDraftPhoto.lat, lng: currentDraftPhoto.lng, locationText: document.getElementById('locationInput').value, time: new Date().toLocaleString() });
+        showStatus("✅ Photo saved!", "success"); 
+        document.getElementById('previewSection').style.display = 'none'; 
+        document.getElementById('cameraInput').value = ''; 
+        updateGalleryUI();
+        loadDashboardData(); // Update dashboard count
+    });
+
+    async function updateGalleryUI() {
+        const photos = await getAllFromDB('photos');
+        document.getElementById('photoCount').textContent = photos.length;
+        document.getElementById('gallery').innerHTML = photos.length > 0 ? photos.map((p, i) => `
+            <div class="photo-card"><img src="${p.image}"><div class="photo-details"><div>🕒 ${p.time}</div><div>📍 ${p.locationText}</div></div></div>`).join('') : '<p style="text-align:center;">No photos.</p>';
+        document.getElementById('generateBtn').disabled = photos.length === 0;
+    }
+
+    document.getElementById('generateBtn').addEventListener('click', async () => {
+        showStatus("⏳ Preparing PPT...", "info"); document.getElementById('generateBtn').disabled = true;
+        try {
+            const photos = await getAllFromDB('photos'); let pptx = new PptxGenJS(); pptx.layout = 'LAYOUT_WIDE';
+            let slide1 = pptx.addSlide(); slide1.addText("The Sarkar Advertisements", { x:1, y:1.5, w:'80%', h:1, fontSize:36, align:'center', bold:true, color:'F37A20' });
+            photos.forEach((p, i) => {
+                let slide = pptx.addSlide(); slide.addText(`Stop #${i + 1}`, { x: 0.5, y: 0.2, w: '90%', h: 0.5, fontSize: 24, bold: true, color: 'F37A20' });
+                slide.addImage({ data: p.image, x: 0.5, y: 0.8, w: '50%', h: '80%', sizing: { type: 'contain' } });
+                let texts = [{ text: "Time:\n", options: { bold: true, color: '6B7280' } }, { text: `${p.time}\n\n` }, { text: "Location:\n", options: { bold: true, color: '6B7280' } }, { text: `${p.locationText}\n\n` }];
+                if(p.lat) texts.push({ text: "📍 Open Map", options: { hyperlink: { url: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}` }, color: 'F37A20', underline: true } });
+                slide.addText(texts, { x: '58%', y: 1.5, w: '40%', h: 4, align: 'left', fill: { color: 'FFF7ED' } });
+            });
+            await pptx.writeFile({ fileName: `Route-Report-${Date.now()}.pptx` }); showStatus("✅ PPT Downloaded!", "success");
+        } catch (e) { showStatus("❌ Error generating PPT.", "error"); } finally { document.getElementById('generateBtn').disabled = false; }
+    });
+
+    document.getElementById('clearPhotosBtn').addEventListener('click', async () => { 
+        if(confirm("Delete all route photos?")) { 
+            await db.transaction(['photos'], 'readwrite').objectStore('photos').clear(); 
+            updateGalleryUI(); 
+            loadDashboardData();
+            showStatus("🗑️ Route Cleared.", "success"); 
+        } 
+    });
+
+    // Boot Up
+    window.addEventListener('DOMContentLoaded', initDB);
+</script>
+</body>
+</html>
