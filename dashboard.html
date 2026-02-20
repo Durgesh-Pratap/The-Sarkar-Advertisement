@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sarkar Advertisement</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h1 {
+            font-size: 24px;
+        }
+
+        .header-content .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .add-data-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .add-data-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input,
+        textarea {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .data-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .data-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .data-item h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .data-item .description {
+            color: #666;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .data-item .content {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            color: #333;
+        }
+
+        .data-item .timestamp {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+
+        .data-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>📊 User Dashboard</h1>
+            <div class="user-info">
+                <span id="username">User</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="message" class="message"></div>
+
+        <div class="add-data-section">
+            <h2>Add New Data Entry</h2>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="title">Title *</label>
+                    <input type="text" id="title" placeholder="Enter title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" placeholder="Enter description">
+                </div>
+
+                <div class="form-group full">
+                    <label for="data">Data Content</label>
+                    <textarea id="data" placeholder="Enter your data (can be JSON, text, etc.)"></textarea>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn-primary" onclick="saveData()">Save Data</button>
+                <button class="btn-secondary" onclick="clearForm()">Clear</button>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">Your Data Entries</div>
+            <div id="dataList" class="data-list">
+                <div class="empty-state">
+                    <p>No data entries yet. Create your first entry!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+        let currentUser = null;
+        let editingId = null;
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('user');
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(user);
+            document.getElementById('username').textContent = currentUser.username;
+            loadUserData();
+        });
+
+        async function saveData() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const data = document.getElementById('data').value;
+
+            if (!title) {
+                showMessage('Title is required', 'error');
+                return;
+            }
+
+            try {
+                const url = editingId
+                    ? `${API_URL}/api/userdata/${editingId}`
+                    : `${API_URL}/api/userdata`;
+
+                const method = editingId ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUser.id,
+                        title,
+                        description,
+                        data
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage(editingId ? 'Data updated successfully' : 'Data saved successfully', 'success');
+                    clearForm();
+                    editingId = null;
+                    loadUserData();
+                } else {
+                    showMessage(result.message || 'Error saving data', 'error');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const response = await fetch(`${API_URL}/api/userdata/${currentUser.id}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayData(result.data);
+                } else {
+                    showMessage('Error loading data', 'error');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        }
+
+        function displayData(data) {
+            const dataList = document.getElementById('dataList');
+
+            if (!data || data.length === 0) {
+                dataList.innerHTML = '<div class="empty-state"><p>No data entries yet. Create your first entry!</p></div>';
+                return;
+            }
+
+            dataList.innerHTML = data.map(item => `
+                <div class="data-item">
+                    <h3>${escapeHtml(item.title)}</h3>
+                    ${item.description ? `<div class="description">${escapeHtml(item.description)}</div>` : ''}
+                    ${item.data ? `<div class="content">${escapeHtml(item.data)}</div>` : ''}
+                    <div class="timestamp">
+                        Created: ${new Date(item.createdAt).toLocaleString()}
+                        ${item.updatedAt && item.updatedAt !== item.createdAt ? `<br>Updated: ${new Date(item.updatedAt).toLocaleString()}` : ''}
+                    </div>
+                    <div class="data-actions">
+                        <button class="btn-edit" onclick="editData(${item.id}, '${escapeAttr(item.title)}', '${escapeAttr(item.description || '')}', '${escapeAttr(item.data || '')}')">Edit</button>
+                        <button class="btn-danger" onclick="deleteData(${item.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function editData(id, title, description, data) {
+            document.getElementById('title').value = title;
+            document.getElementById('description').value = description;
+            document.getElementById('data').value = data;
+            editingId = id;
+            window.scrollTo(0, 0);
+        }
+
+        async function deleteData(id) {
+            if (!confirm('Are you sure you want to delete this entry?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/userdata/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('Data deleted successfully', 'success');
+                    loadUserData();
+                } else {
+                    showMessage(result.message || 'Error deleting data', 'error');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('title').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('data').value = '';
+            editingId = null;
+        }
+
+        function showMessage(text, type) {
+            const el = document.getElementById('message');
+            el.textContent = text;
+            el.className = `message ${type}`;
+            setTimeout(() => {
+                el.className = 'message';
+            }, 5000);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function escapeAttr(text) {
+            return text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>
