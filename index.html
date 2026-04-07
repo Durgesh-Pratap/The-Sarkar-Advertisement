@@ -5,172 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Sarkar Advertisements Workspace</title>
     
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#F37A20">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    
     <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <style>
         :root {
             --primary: #F37A20; 
             --primary-hover: #D96915;
-            --success: #10B981;
-            --danger: #EF4444;
-            --info: #3B82F6;
-            --bg: #F3F4F6;
+            --bg: #F0F2F5;
             --card-bg: #FFFFFF;
-            --text-main: #1F2937;
-            --text-muted: #6B7280;
+            --text-main: #444;
+            --border-color: #E2E8F0;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg); color: var(--text-main);
-            padding: 15px; line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh;
+            padding: 15px; min-height: 100vh;
         }
 
-        .container { max-width: 900px; margin: 0 auto; flex: 1; width: 100%;}
+        .container { max-width: 1000px; margin: 0 auto; width: 100%;}
 
-        header {
-            text-align: center; margin-bottom: 15px; padding: 20px 15px 10px 15px;
-            background: var(--card-bg); border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-top: 5px solid var(--primary);
+        /* Modern Nav Bar (Screenshot Style) */
+        .nav-bar { 
+            display: flex; 
+            background: #DDE2E9; 
+            padding: 8px; 
+            border-radius: 12px; 
+            gap: 8px; 
+            margin-bottom: 25px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
-        .brand-title { font-size: 1.5rem; color: var(--primary); font-weight: 800; text-transform: uppercase; margin-bottom: 5px; line-height: 1.2;}
-        
-        .tabs { display: flex; flex-wrap: wrap; gap: 5px; background: #E5E7EB; padding: 5px; border-radius: 12px; margin-bottom: 20px; }
-        .tab-btn {
-            flex: 1 1 calc(50% - 5px); padding: 10px 5px; font-size: 0.85rem; font-weight: bold; color: #4B5563;
-            background: transparent; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center;
+        .nav-item {
+            flex: 1; padding: 12px; text-align: center; cursor: pointer;
+            font-weight: 600; font-size: 0.9rem; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            color: #556; transition: 0.2s;
         }
-        .tab-btn.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .nav-item.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
         .app-section { display: none; }
-        .app-section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        .app-section.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
-        .card { background: var(--card-bg); padding: 15px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
-        
-        button { padding: 12px; font-size: 15px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer; width: 100%; transition: 0.2s; }
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-success { background-color: var(--success); color: white; }
-        .btn-danger { background-color: var(--danger); color: white; }
-        .btn-secondary { background-color: #E5E7EB; color: #374151; }
+        .card { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .form-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
 
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        /* Input Styling from Screenshot */
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
         .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; color: #374151;}
-        .input-group input, .input-group textarea { width: 100%; padding: 10px; border: 1px solid #D1D5DB; border-radius: 8px; font-size: 14px; }
-        
-        /* Dashboard */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .dash-card { background: #fff; padding: 20px 10px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid var(--primary); text-align: center; }
-        .dash-value { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin: 5px 0; }
-        .dash-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.85rem; color: #667; }
+        .input-group input, .input-group textarea { 
+            width: 100%; padding: 12px; border: 1.5px solid var(--border-color); 
+            border-radius: 10px; font-size: 14px; transition: 0.2s;
+        }
 
-        /* Invoice Table */
-        .invoice-table-wrapper { overflow-x: auto; margin-bottom: 15px; border: 1px solid #E5E7EB; border-radius: 8px;}
-        .invoice-table { width: 100%; min-width: 600px; border-collapse: collapse; }
-        .invoice-table th { background: #F9FAFB; padding: 10px; font-size: 0.85rem; text-align: left; border-bottom: 2px solid #EEE;}
-        .invoice-table td { padding: 8px; border-bottom: 1px solid #EEE;}
-        .invoice-table input { padding: 8px; border: 1px solid #DDD; border-radius: 4px; width: 100%; }
+        /* Party Boxes (Buyer/Consignee) */
+        .party-box { 
+            background: #F8FAFC; border: 1.5px solid var(--border-color); 
+            padding: 15px; border-radius: 15px;
+        }
+        .party-box label { color: var(--primary); font-size: 0.9rem; font-weight: 800; display: block; margin-bottom: 10px; }
 
-        .totals-box { background: #F9FAFB; padding: 15px; border-radius: 8px; text-align: right; }
-        .totals-row { display: flex; justify-content: flex-end; gap: 20px; margin-bottom: 5px; font-size: 0.95rem; }
-        .totals-row.grand { font-size: 1.2rem; font-weight: bold; color: var(--primary); border-top: 1px solid #DDD; padding-top: 8px; }
+        /* Table Styling */
+        .table-container { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid var(--border-color); }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background: #F1F5F9; padding: 12px; text-align: left; font-size: 0.8rem; border-bottom: 2px solid var(--border-color); }
+        td { padding: 10px; border-bottom: 1px solid var(--border-color); }
+        table input { border: 1px solid #ddd; padding: 6px; border-radius: 5px; width: 100%; }
 
-        #status { display: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: 500; margin-bottom: 15px; }
-        #status.show { display: block; }
-        #status.info { background-color: #EFF6FF; color: #1D4ED8; }
-        #status.success { background-color: #D1FAE5; color: #065F46; }
-        #status.error { background-color: #FEE2E2; color: #991B1B; }
+        .btn-main { 
+            background: var(--primary); color: white; padding: 16px; border: none; 
+            border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; font-size: 1rem;
+        }
 
-        /* Print Styles - EXACT GRID FROM SARKAR PDF */
+        /* Print Template (Sarkar Official Grid) */
         #printableInvoice { display: none; }
         @media print {
             @page { margin: 10mm; }
             body * { visibility: hidden; }
             #printableInvoice, #printableInvoice * { visibility: visible; }
-            #printableInvoice { display: block; position: absolute; left: 0; top: 0; width: 100%; font-size: 10px; font-family: Arial, sans-serif; color: #000; }
+            #printableInvoice { display: block; position: absolute; left: 0; top: 0; width: 100%; font-size: 10pt; color: #000; font-family: Arial, sans-serif; }
             .p-border { border: 1px solid #000; }
             .p-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #000; }
-            .p-cell { border: 0.5px solid #000; padding: 5px; min-height: 45px; }
+            .p-cell { border: 0.5px solid #000; padding: 6px; min-height: 50px; }
             .p-table { width: 100%; border-collapse: collapse; margin-top: -1px; }
-            .p-table th, .p-table td { border: 1px solid #000; padding: 4px; }
+            .p-table th, .p-table td { border: 1px solid #000; padding: 5px; }
             .p-table th { background: #eee !important; -webkit-print-color-adjust: exact; }
-            .p-footer { display: grid; grid-template-columns: 1.5fr 1fr; border: 1px solid #000; border-top: none; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <div class="brand-title">The Sarkar Advertisements</div>
-        <div class="brand-tagline">Grow Your Business Adverties with us</div>
-    </header>
-
-    <div class="tabs" id="navTabs">
-        <button class="tab-btn active" data-target="dashboard">📊 Dashboard</button>
-        <button class="tab-btn" data-target="mapper">📸 Route Mapper</button>
-        <button class="tab-btn" data-target="invoice">🧾 Invoice Form</button>
-        <button class="tab-btn" data-target="history">📂 Saved Invoices</button>
+    <div class="nav-bar">
+        <div class="nav-item" onclick="switchTab('dashboard')">📊 Dashboard</div>
+        <div class="nav-item" onclick="switchTab('mapper')">📷 Route Mapper</div>
+        <div class="nav-item active" id="nav-invoice" onclick="switchTab('invoice')">📄 Invoice Form</div>
+        <div class="nav-item" onclick="switchTab('history')">📂 Saved Invoices</div>
     </div>
 
-    <div id="status"></div>
-
-    <div id="dashboardSection" class="app-section active">
+    <div id="invoiceSection" class="app-section active">
         <div class="card">
-            <h3 style="margin-bottom: 15px; color: var(--primary);">Business Overview</h3>
-            <div class="dashboard-grid">
-                <div class="dash-card">
-                    <div class="dash-label">Total Revenue</div>
-                    <div class="dash-value" id="dashRevenue">₹0</div>
-                </div>
-                <div class="dash-card">
-                    <div class="dash-label">Total GST Coll.</div>
-                    <div class="dash-value" id="dashGST" style="color:#10B981;">₹0</div>
-                </div>
-                <div class="dash-card">
-                    <div class="dash-label">Total Invoices</div>
-                    <div class="dash-value" id="dashInvCount" style="color:#3B82F6;">0</div>
-                </div>
-                <div class="dash-card">
-                    <div class="dash-label">Route Photos</div>
-                    <div class="dash-value" id="dashPhotoCount" style="color:#8B5CF6;">0</div>
-                </div>
-            </div>
-            <button class="btn-primary" onclick="switchTab('invoice')">✨ Create New Invoice</button>
-        </div>
-    </div>
-
-    <div id="mapperSection" class="app-section">
-        <div class="card">
-            <h3 style="margin-bottom: 15px;">📸 Capture Route Photos</h3>
-            <label for="cameraInput" class="file-label">Open Camera & Take Photo</label>
-            <input type="file" id="cameraInput" accept="image/*" capture="environment">
-        </div>
-        <div id="previewSection" class="card" style="display: none; border: 2px solid var(--primary);">
-            <h3 style="margin-bottom: 10px; color: var(--primary);">Review Photo & Location</h3>
-            <img id="previewImg" src="" style="width:100%; border-radius:8px; margin-bottom:10px;">
-            <div class="input-group"><label>Details:</label><input type="text" id="locationInput" placeholder="GPS Coordinates..."></div>
-            <button id="savePhotoBtn" class="btn-primary">💾 Save Photo to Route</button>
-        </div>
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold;">
-                <span>Captured Locations</span><span id="photoCount" style="background: var(--primary); color: white; padding: 2px 10px; border-radius: 20px;">0</span>
-            </div>
-            <div id="gallery" class="gallery-grid"></div>
-            <button id="generateBtn" class="btn-success" style="margin-top: 15px;" disabled>📄 Export Route to PPT</button>
-            <button id="clearPhotosBtn" class="btn-danger" style="margin-top: 10px;">🗑️ Clear Route Data</button>
-        </div>
-    </div>
-
-    <div id="invoiceSection" class="app-section">
-        <div class="card">
-            <h3 style="margin-bottom: 15px; color: var(--primary);">🧾 Tax Invoice Details</h3>
+            <div class="form-title">📄 Tax Invoice Form</div>
             
             <div class="input-grid">
                 <div class="input-group"><label>Invoice No.</label><input type="text" id="invNo" value="01"></div>
@@ -178,21 +115,21 @@
             </div>
 
             <div class="input-grid">
-                <div class="card" style="background:#f8f9fa; border:1px solid #ddd;">
-                    <label style="color:var(--primary); font-weight:bold;">Buyer (Bill to)</label>
-                    <input type="text" id="bName" placeholder="Buyer Name" style="margin-bottom:5px;">
-                    <textarea id="bAddr" placeholder="Address" rows="2"></textarea>
-                    <input type="text" id="bGST" placeholder="GSTIN/UIN" style="margin-top:5px;">
+                <div class="party-box">
+                    <label>Buyer (Bill to)</label>
+                    <input type="text" id="bName" placeholder="Name" style="margin-bottom:8px;">
+                    <textarea id="bAddr" placeholder="Full Address" rows="2"></textarea>
+                    <input type="text" id="bGST" placeholder="GSTIN/UIN" style="margin-top:8px;">
                 </div>
-                <div class="card" style="background:#f8f9fa; border:1px solid #ddd;">
-                    <label style="color:var(--primary); font-weight:bold;">Consignee (Ship to)</label>
-                    <input type="text" id="cName" placeholder="Consignee Name" style="margin-bottom:5px;">
-                    <textarea id="cAddr" placeholder="Address" rows="2"></textarea>
-                    <input type="text" id="cGST" placeholder="GSTIN/UIN" style="margin-top:5px;">
+                <div class="party-box">
+                    <label>Consignee (Ship to)</label>
+                    <input type="text" id="cName" placeholder="Name" style="margin-bottom:8px;">
+                    <textarea id="cAddr" placeholder="Full Address" rows="2"></textarea>
+                    <input type="text" id="cGST" placeholder="GSTIN/UIN" style="margin-top:8px;">
                 </div>
             </div>
 
-            <div class="input-grid">
+            <div class="input-grid" style="margin-top:15px;">
                 <div class="input-group"><label>Delivery Note</label><input type="text" id="logDelNote"></div>
                 <div class="input-group"><label>Mode of Payment</label><input type="text" id="logPayMode" placeholder="Cash/Online"></div>
                 <div class="input-group"><label>Dispatch Doc No.</label><input type="text" id="logDispatch"></div>
@@ -201,371 +138,134 @@
                 <div class="input-group"><label>Reference No.</label><input type="text" id="logRef"></div>
             </div>
 
-            <div class="invoice-table-wrapper">
-                <table class="invoice-table">
+            <div class="table-container">
+                <table>
                     <thead><tr><th>Particulars</th><th>HSN</th><th>Qty</th><th>Rate</th><th>Per</th><th>Total</th></tr></thead>
                     <tbody id="invoiceItemsBody"></tbody>
                 </table>
             </div>
-            <button onclick="addInvoiceRow()" class="btn-secondary" style="margin-bottom:20px;">+ Add Item</button>
+            <button onclick="addRow()" style="background:#E2E8F0; border:none; padding:10px; border-radius:8px; cursor:pointer; margin-bottom:20px;">+ Add Line Item</button>
 
-            <div class="totals-box">
-                <div class="totals-row">Taxable Value: <span id="lblSubtotal">₹0.00</span></div>
-                <div class="totals-row">CGST (9%): <span id="lblCGST">₹0.00</span></div>
-                <div class="totals-row">SGST (9%): <span id="lblSGST">₹0.00</span></div>
-                <div class="totals-row">Round Off: <span id="lblRound">0.00</span></div>
-                <div class="totals-row grand">Grand Total: <span id="lblTotal">₹0.00</span></div>
+            <div style="text-align: right; background: #F8FAFC; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                <div style="font-size: 0.9rem;">Taxable: ₹<span id="lblTaxable">0.00</span></div>
+                <div style="font-size: 0.9rem;">GST (18%): ₹<span id="lblTax">0.00</span></div>
+                <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">Grand Total: ₹<span id="lblTotal">0.00</span></div>
             </div>
 
-            <button onclick="saveAndPrint()" class="btn-primary" style="margin-top:20px;">💾 Save & Print Invoice</button>
+            <button class="btn-main" onclick="saveAndPrint()">💾 Save & Print Official Invoice</button>
+        </div>
+    </div>
+
+    <div id="dashboardSection" class="app-section">
+        <div class="card"><h3>📊 Dashboard</h3><div id="dashStats">Loading...</div></div>
+    </div>
+    
+    <div id="mapperSection" class="app-section">
+        <div class="card">
+            <h3>📷 Route Mapper</h3>
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="processPhoto(event)">
+            <div id="gallery" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;"></div>
         </div>
     </div>
 
     <div id="historySection" class="app-section">
-        <div class="card">
-            <h3 style="margin-bottom: 15px; color: var(--primary);">📂 Invoice History</h3>
-            <div id="invoiceHistoryList"></div>
-        </div>
+        <div class="card"><h3>📂 History</h3><div id="historyList"></div></div>
     </div>
 </div>
 
 <div id="printableInvoice">
     <div class="p-border">
-        <div style="text-align:center; padding:5px; border-bottom:1px solid #000;"><strong>Tax Invoice</strong></div>
+        <div style="text-align:center; padding:5px; border-bottom:1px solid #000; font-weight:bold;">Tax Invoice</div>
         <div class="p-grid">
-            <div class="p-cell" style="grid-row: span 2;">
-                <strong>The Sarkar Advertisement (2026-27)</strong><br>
-                A-661, World Bank, Barra, Kanpur Nagar, UP<br>
-                GSTIN/UIN: 09BNDPR3338D1Z0<br>
-                State Name: Uttar Pradesh, Code: 09
-            </div>
-            <div class="p-cell"><strong>Invoice No:</strong> <span id="p-invNo"></span></div>
-            <div class="p-cell"><strong>Dated:</strong> <span id="p-invDate"></span></div>
-            <div class="p-cell"><strong>Delivery Note:</strong> <span id="p-delNote"></span></div>
-            <div class="p-cell"><strong>Mode/Terms of Payment:</strong> <span id="p-payMode"></span></div>
-        </div>
-
-        <div class="p-grid">
+            <div class="p-cell"><strong>The Sarkar Advertisement (2026-27)</strong><br>A-661, World Bank, Barra, Kanpur Nagar, UP<br>GSTIN: 09BNDPR3338D1Z0</div>
             <div class="p-cell">
-                <strong>Consignee (Ship to)</strong><br>
-                <span id="p-cName" style="font-weight:bold;"></span><br>
-                <span id="p-cAddr"></span><br>
-                GSTIN/UIN: <span id="p-cGST"></span>
-            </div>
-            <div class="p-cell">
-                <strong>Reference No. & Date:</strong> <span id="p-ref"></span><br>
-                <strong>Destination:</strong> <span id="p-dest"></span><br>
-                <strong>Motor Vehicle No:</strong> <span id="p-veh"></span>
+                <strong>Invoice No:</strong> <span id="p-invNo"></span><br>
+                <strong>Dated:</strong> <span id="p-invDate"></span><br>
+                <strong>Delivery Note:</strong> <span id="p-delNote"></span><br>
+                <strong>Mode of Payment:</strong> <span id="p-payMode"></span>
             </div>
         </div>
-
         <div class="p-grid">
-            <div class="p-cell" style="border-bottom:none;">
-                <strong>Buyer (Bill to)</strong><br>
-                <span id="p-bName" style="font-weight:bold;"></span><br>
-                <span id="p-bAddr"></span><br>
-                GSTIN/UIN: <span id="p-bGST"></span>
-            </div>
-            <div class="p-cell" style="border-bottom:none;">
-                <strong>Dispatch Doc No:</strong> <span id="p-dispatch"></span>
-            </div>
+            <div class="p-cell"><strong>Consignee:</strong> <span id="p-cName"></span><br><span id="p-cAddr"></span><br>GST: <span id="p-cGST"></span></div>
+            <div class="p-cell"><strong>Buyer:</strong> <span id="p-bName"></span><br><span id="p-bAddr"></span><br>GST: <span id="p-bGST"></span></div>
         </div>
-
+        <div class="p-grid">
+            <div class="p-cell"><strong>Dispatch Doc No:</strong> <span id="p-dispatch"></span><br><strong>Destination:</strong> <span id="p-dest"></span></div>
+            <div class="p-cell"><strong>Vehicle No:</strong> <span id="p-veh"></span><br><strong>Ref:</strong> <span id="p-ref"></span></div>
+        </div>
         <table class="p-table">
-            <thead><tr><th>SI</th><th>Particulars</th><th>HSN</th><th>Qty</th><th>Rate</th><th>per</th><th>Amount</th></tr></thead>
+            <thead><tr><th>SI</th><th>Particulars</th><th>HSN</th><th>Qty</th><th>Rate</th><th>Per</th><th>Amount</th></tr></thead>
             <tbody id="p-itemsBody"></tbody>
-            <tfoot>
-                <tr><td colspan="6" align="right">Output CGST @ 9%</td><td id="p-resCGST"></td></tr>
-                <tr><td colspan="6" align="right">Output SGST @ 9%</td><td id="p-resSGST"></td></tr>
-                <tr><td colspan="2"><i>Less: Round Off</i></td><td colspan="4"></td><td id="p-resRound"></td></tr>
-                <tr><td colspan="6" align="right"><strong>Total</strong></td><td id="p-resGrand"></td></tr>
-            </tfoot>
         </table>
-
-        <div class="p-cell"><strong>Amount Chargeable (in words):</strong> INR <span id="p-words"></span></div>
-
-        <div class="p-footer">
-            <div style="padding:5px;">E. & O.E.</div>
-            <div style="text-align:right; padding:5px;">
-                for <strong>The Sarkar Advertisement (2026-27)</strong><br><br><br>
-                Authorised Signatory
-            </div>
-        </div>
+        <div style="text-align:right; padding:10px; border:1px solid #000; border-top:none; font-weight:bold;">Grand Total: ₹<span id="p-grand"></span></div>
     </div>
-    <div style="text-align:center; font-size: 8px; margin-top: 5px;">This is a Computer Generated Invoice</div>
 </div>
 
 <script>
-    // ==========================================
-    // CORE LOGIC (DB & STATE)
-    // ==========================================
-    const DB_NAME = 'SarkarWorkspaceDB', DB_VERSION = 2;
-    let db, invItems = [];
-    let currentDraftPhoto = { image: null, lat: null, lng: null };
-
+    let invItems = [];
     document.getElementById('invDate').valueAsDate = new Date();
 
-    function initDB() {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-        request.onupgradeneeded = e => {
-            db = e.target.result;
-            if (!db.objectStoreNames.contains('photos')) db.createObjectStore('photos', { keyPath: 'id', autoIncrement: true });
-            if (!db.objectStoreNames.contains('invoices')) db.createObjectStore('invoices', { keyPath: 'id', autoIncrement: true });
-        };
-        request.onsuccess = e => { 
-            db = e.target.result; 
-            updateDashboard(); 
-            updateGalleryUI();
-            addInvoiceRow("Advertiesment Services", "8307"); 
-        };
+    function switchTab(tab) {
+        document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.getElementById(tab + 'Section').classList.add('active');
+        // Handle nav styling
+        if(event) event.currentTarget.classList.add('active');
     }
 
-    function switchTab(tabName) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`.tab-btn[data-target="${tabName}"]`).classList.add('active');
-        document.querySelectorAll('.app-section').forEach(sec => sec.classList.remove('active'));
-        document.getElementById(tabName + 'Section').classList.add('active');
-        if(tabName === 'dashboard') updateDashboard();
-        if(tabName === 'history') loadHistory();
+    function addRow() {
+        const id = Date.now();
+        invItems.push({ id, desc: 'Advertiesment Services', hsn: '8307', qty: 0, rate: 0, per: 'sqft.' });
+        const tr = document.createElement('tr');
+        tr.id = `row-${id}`;
+        tr.innerHTML = `
+            <td><input type="text" value="Advertiesment Services" oninput="updateVal(${id}, 'desc', this.value)"></td>
+            <td><input type="text" value="8307" oninput="updateVal(${id}, 'hsn', this.value)"></td>
+            <td><input type="number" value="0" oninput="updateVal(${id}, 'qty', this.value)"></td>
+            <td><input type="number" value="0" oninput="updateVal(${id}, 'rate', this.value)"></td>
+            <td><input type="text" value="sqft." oninput="updateVal(${id}, 'per', this.value)"></td>
+            <td id="total-${id}">0.00</td>
+        `;
+        document.getElementById('invoiceItemsBody').appendChild(tr);
     }
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => switchTab(btn.dataset.target));
-    });
-
-    function showStatus(msg, type = 'info') {
-        const el = document.getElementById('status');
-        el.textContent = msg; el.className = `show ${type}`;
-        setTimeout(() => el.className = '', 4000);
-    }
-
-    // ==========================================
-    // INVOICE ENGINE
-    // ==========================================
-    function addInvoiceRow(d='', h='') {
-        invItems.push({id: Date.now()+Math.random(), desc: d, hsn: h, qty: 0, rate: 0, per: 'sqft.'});
-        renderTable();
-    }
-
-    function renderTable() {
-        const tbody = document.getElementById('invoiceItemsBody');
-        tbody.innerHTML = '';
-        invItems.forEach(item => {
-            tbody.innerHTML += `<tr>
-                <td><input type="text" value="${item.desc}" oninput="updateItem(${item.id}, 'desc', this.value)"></td>
-                <td><input type="text" value="${item.hsn}" oninput="updateItem(${item.id}, 'hsn', this.value)"></td>
-                <td><input type="number" value="${item.qty}" oninput="updateItem(${item.id}, 'qty', this.value)"></td>
-                <td><input type="number" value="${item.rate}" oninput="updateItem(${item.id}, 'rate', this.value)"></td>
-                <td><input type="text" value="${item.per}" oninput="updateItem(${item.id}, 'per', this.value)"></td>
-                <td>${(item.qty * item.rate).toFixed(2)}</td>
-            </tr>`;
-        });
-        calculateTotals();
-    }
-
-    function updateItem(id, field, value) {
+    function updateVal(id, field, value) {
         let item = invItems.find(i => i.id === id);
         item[field] = (field === 'qty' || field === 'rate') ? parseFloat(value) || 0 : value;
-        calculateTotals();
+        document.getElementById(`total-${id}`).innerText = (item.qty * item.rate).toFixed(2);
+        calc();
     }
 
-    function calculateTotals() {
-        let taxable = invItems.reduce((sum, item) => sum + (item.qty * item.rate), 0);
-        let gst = taxable * 0.09;
-        let totalRaw = taxable + (gst * 2);
-        let totalRounded = Math.round(totalRaw);
-        let roundOff = totalRounded - totalRaw;
-
-        document.getElementById('lblSubtotal').innerText = taxable.toFixed(2);
-        document.getElementById('lblCGST').innerText = gst.toFixed(2);
-        document.getElementById('lblSGST').innerText = gst.toFixed(2);
-        document.getElementById('lblRound').innerText = roundOff.toFixed(2);
-        document.getElementById('lblTotal').innerText = totalRounded.toFixed(2);
-        return { taxable, gst, roundOff, totalRounded };
+    function calc() {
+        let sub = invItems.reduce((s, i) => s + (i.qty * i.rate), 0);
+        let tax = sub * 0.18;
+        document.getElementById('lblTaxable').innerText = sub.toFixed(2);
+        document.getElementById('lblTax').innerText = tax.toFixed(2);
+        document.getElementById('lblTotal').innerText = Math.round(sub + tax).toFixed(2);
     }
 
     function saveAndPrint() {
-        const totals = calculateTotals();
-        const invData = {
-            invNo: document.getElementById('invNo').value,
-            date: document.getElementById('invDate').value,
-            buyer: { name: document.getElementById('bName').value, addr: document.getElementById('bAddr').value, gst: document.getElementById('bGST').value },
-            consignee: { name: document.getElementById('cName').value, addr: document.getElementById('cAddr').value, gst: document.getElementById('cGST').value },
-            logistics: { 
-                delNote: document.getElementById('logDelNote').value, 
-                payMode: document.getElementById('logPayMode').value, 
-                dispatch: document.getElementById('logDispatch').value, 
-                dest: document.getElementById('logDest').value, 
-                veh: document.getElementById('logVehicle').value, 
-                ref: document.getElementById('logRef').value 
-            },
-            items: invItems,
-            totals: totals
+        // Map to Print
+        const map = (pId, fId) => { 
+            const el = document.getElementById(fId);
+            if(el) document.getElementById('p-'+pId).innerText = el.value; 
         };
+        map('invNo', 'invNo'); map('invDate', 'invDate'); map('delNote', 'logDelNote'); map('payMode', 'logPayMode');
+        map('cName', 'cName'); map('cAddr', 'cAddr'); map('cGST', 'cGST');
+        map('bName', 'bName'); map('bAddr', 'bAddr'); map('bGST', 'bGST');
+        map('dispatch', 'logDispatch'); map('dest', 'logDest'); map('veh', 'logVehicle'); map('ref', 'logRef');
 
-        // Save to DB
-        const tx = db.transaction(['invoices'], 'readwrite');
-        tx.objectStore('invoices').add(invData);
-        
-        // Map to Print Spans
-        document.getElementById('p-invNo').innerText = invData.invNo;
-        document.getElementById('p-invDate').innerText = invData.date;
-        document.getElementById('p-delNote').innerText = invData.logistics.delNote;
-        document.getElementById('p-payMode').innerText = invData.logistics.payMode;
-        document.getElementById('p-dispatch').innerText = invData.logistics.dispatch;
-        document.getElementById('p-ref').innerText = invData.logistics.ref;
-        document.getElementById('p-dest').innerText = invData.logistics.dest;
-        document.getElementById('p-veh').innerText = invData.logistics.veh;
-
-        document.getElementById('p-bName').innerText = invData.buyer.name;
-        document.getElementById('p-bAddr').innerText = invData.buyer.addr;
-        document.getElementById('p-bGST').innerText = invData.buyer.gst;
-        document.getElementById('p-cName').innerText = invData.consignee.name;
-        document.getElementById('p-cAddr').innerText = invData.consignee.addr;
-        document.getElementById('p-cGST').innerText = invData.consignee.gst;
-
-        let pBody = '';
-        invData.items.forEach((item, i) => {
-            pBody += `<tr><td>${i+1}</td><td>${item.desc}</td><td>${item.hsn}</td><td>${item.qty}</td><td>${item.rate}</td><td>${item.per}</td><td>${(item.qty*item.rate).toFixed(2)}</td></tr>`;
+        let rows = "";
+        invItems.forEach((item, i) => {
+            rows += `<tr><td>${i+1}</td><td>${item.desc}</td><td>${item.hsn}</td><td>${item.qty}</td><td>${item.rate}</td><td>${item.per}</td><td align="right">${(item.qty*item.rate).toFixed(2)}</td></tr>`;
         });
-        document.getElementById('p-itemsBody').innerHTML = pBody;
-        document.getElementById('p-resCGST').innerText = totals.gst.toFixed(2);
-        document.getElementById('p-resSGST').innerText = totals.gst.toFixed(2);
-        document.getElementById('p-resRound').innerText = totals.roundOff.toFixed(2);
-        document.getElementById('p-resGrand').innerText = totals.totalRounded.toFixed(2);
-        document.getElementById('p-words').innerText = numberToWords(totals.totalRounded);
-
+        document.getElementById('p-itemsBody').innerHTML = rows;
+        document.getElementById('p-grand').innerText = document.getElementById('lblTotal').innerText;
         window.print();
     }
 
-    // ==========================================
-    // ROUTE MAPPER ENGINE
-    // ==========================================
-    document.getElementById('cameraInput').addEventListener('change', async (e) => {
-        if (e.target.files.length === 0) return;
-        showStatus("⏳ Processing image & GPS...", "info");
-        document.getElementById('locationInput').value = "Locating...";
-        document.getElementById('previewSection').style.display = 'block';
-        const file = e.target.files[0];
-        
-        const compressPromise = new Promise(resolve => {
-            const reader = new FileReader();
-            reader.onload = ev => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const scale = 800 / img.width;
-                    canvas.width = 800; canvas.height = img.height * scale;
-                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.6));
-                };
-                img.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        const gpsPromise = new Promise(resolve => {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-                (err) => resolve({ error: "GPS Timeout" }),
-                { enableHighAccuracy: true, timeout: 10000 }
-            );
-        });
-
-        const [imgBase64, gpsResult] = await Promise.all([compressPromise, gpsPromise]);
-        currentDraftPhoto = { image: imgBase64, lat: gpsResult.lat, lng: gpsResult.lng };
-        document.getElementById('previewImg').src = imgBase64;
-        document.getElementById('locationInput').value = gpsResult.error ? "Manual entry required" : `Lat: ${gpsResult.lat.toFixed(4)}, Lng: ${gpsResult.lng.toFixed(4)}`;
-    });
-
-    document.getElementById('savePhotoBtn').addEventListener('click', async () => {
-        const tx = db.transaction(['photos'], 'readwrite');
-        tx.objectStore('photos').add({ image: currentDraftPhoto.image, lat: currentDraftPhoto.lat, lng: currentDraftPhoto.lng, locationText: document.getElementById('locationInput').value, time: new Date().toLocaleString() });
-        showStatus("✅ Photo saved!", "success");
-        document.getElementById('previewSection').style.display = 'none';
-        updateGalleryUI();
-    });
-
-    async function updateGalleryUI() {
-        const tx = db.transaction(['photos'], 'readonly');
-        tx.objectStore('photos').getAll().onsuccess = e => {
-            const photos = e.target.result;
-            document.getElementById('photoCount').innerText = photos.length;
-            document.getElementById('gallery').innerHTML = photos.length > 0 ? photos.map(p => `
-                <div class="photo-card" style="border:1px solid #ddd; border-radius:8px; overflow:hidden;">
-                    <img src="${p.image}" style="width:100%; height:100px; object-fit:cover;">
-                    <div style="padding:5px; font-size:10px;">${p.time}</div>
-                </div>`).join('') : '<p>No photos.</p>';
-            document.getElementById('generateBtn').disabled = photos.length === 0;
-        };
-    }
-
-    document.getElementById('generateBtn').addEventListener('click', async () => {
-        const tx = db.transaction(['photos'], 'readonly');
-        tx.objectStore('photos').getAll().onsuccess = async e => {
-            const photos = e.target.result;
-            let pptx = new PptxGenJS();
-            photos.forEach((p, i) => {
-                let slide = pptx.addSlide();
-                slide.addText(`Stop #${i+1}`, { x:0.5, y:0.2, fontSize:18, color:'F37A20' });
-                slide.addImage({ data: p.image, x:0.5, y:0.7, w:5, h:4 });
-                slide.addText(`Time: ${p.time}\nLocation: ${p.locationText}`, { x:6, y:1, w:3, fontSize:12 });
-            });
-            await pptx.writeFile({ fileName: 'Route_Report.pptx' });
-        };
-    });
-
-    // ==========================================
-    // UTILS
-    // ==========================================
-    function updateDashboard() {
-        const tx = db.transaction(['invoices', 'photos'], 'readonly');
-        tx.objectStore('invoices').getAll().onsuccess = e => {
-            const invs = e.target.result;
-            let total = invs.reduce((s, i) => s + i.totals.totalRounded, 0);
-            let gst = invs.reduce((s, i) => s + (i.totals.gst * 2), 0);
-            document.getElementById('dashRevenue').innerText = `₹${total}`;
-            document.getElementById('dashGST').innerText = `₹${gst.toFixed(0)}`;
-            document.getElementById('dashInvCount').innerText = invs.length;
-        };
-        tx.objectStore('photos').getAll().onsuccess = e => {
-            document.getElementById('dashPhotoCount').innerText = e.target.result.length;
-        };
-    }
-
-    function loadHistory() {
-        const tx = db.transaction(['invoices'], 'readonly');
-        tx.objectStore('invoices').getAll().onsuccess = e => {
-            const invs = e.target.result.reverse();
-            document.getElementById('invoiceHistoryList').innerHTML = invs.map(i => `
-                <div class="card" style="margin-bottom:10px; display:flex; justify-content:space-between;">
-                    <div><strong>${i.buyer.name}</strong><br><small>${i.invNo} | ${i.date}</small></div>
-                    <div style="color:var(--primary); font-weight:bold;">₹${i.totals.totalRounded}</div>
-                </div>`).join('');
-        };
-    }
-
-    function numberToWords(num) {
-        if(num === 0) return "Zero";
-        const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen '];
-        const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
-        const g = (n) => {
-            if (n == 0) return '';
-            if (n < 20) return a[n];
-            return b[Math.floor(n/10)] + ' ' + a[n%10];
-        };
-        let str = '';
-        const lakh = Math.floor(num/100000); num %= 100000;
-        const thousand = Math.floor(num/1000); num %= 1000;
-        const hundred = Math.floor(num/100); num %= 100;
-        if (lakh) str += g(lakh) + 'Lakh ';
-        if (thousand) str += g(thousand) + 'Thousand ';
-        if (hundred) str += g(hundred) + 'Hundred ';
-        if (num) str += (str ? 'and ' : '') + g(num);
-        return str.trim() + " Only";
-    }
-
-    initDB();
+    // Initialize with one row
+    addRow();
 </script>
 </body>
 </html>
