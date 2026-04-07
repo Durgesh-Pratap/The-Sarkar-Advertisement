@@ -89,7 +89,7 @@
 
         /* Invoice UI */
         .invoice-table-wrapper { overflow-x: auto; margin-bottom: 15px; border: 1px solid #E5E7EB; border-radius: 8px;}
-        .invoice-table { width: 100%; min-width: 400px; border-collapse: collapse; text-align: left; }
+        .invoice-table { width: 100%; min-width: 500px; border-collapse: collapse; text-align: left; }
         .invoice-table th, .invoice-table td { padding: 10px; border-bottom: 1px solid #E5E7EB; font-size: 0.9rem;}
         .invoice-table th { background: #F9FAFB; color: #374151; }
         .item-row input { padding: 8px; border: 1px solid #D1D5DB; border-radius: 4px; width: 100%; }
@@ -118,21 +118,16 @@
             body * { visibility: hidden; }
             body { background: white; padding: 0; }
             #printableInvoice, #printableInvoice * { visibility: visible; }
-            #printableInvoice { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; font-family: Arial, sans-serif; color: #000; }
-            .print-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #F37A20; padding-bottom: 20px; margin-bottom: 20px;}
-            .print-header h1 { color: #F37A20; margin: 0; font-size: 28px; text-transform: uppercase;}
-            .print-header p { margin: 2px 0; font-size: 14px; color: #333;}
-            .print-meta { display: flex; justify-content: space-between; margin-bottom: 30px; }
-            .print-box { border: 1px solid #ddd; padding: 15px; width: 48%; border-radius: 8px;}
-            .print-box h3 { margin-top: 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 16px;}
-            .print-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-            .print-table th, .print-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-            .print-table th { background: #f4f4f4; color: #333; font-weight: bold; }
-            .print-totals { float: right; width: 300px; }
-            .print-totals-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 14px;}
-            .print-totals-row.grand { font-size: 18px; font-weight: bold; border-top: 2px solid #000; padding-top: 10px; color: #F37A20;}
-            .print-footer { clear: both; margin-top: 50px; text-align: right; }
-            .print-sign { border-top: 1px solid #000; display: inline-block; padding-top: 5px; width: 200px; text-align: center;}
+            #printableInvoice { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 20px; font-family: 'Segoe UI', Arial, sans-serif; color: #000; font-size: 12px;}
+            .print-header { border: 1px solid #000; padding: 10px; display: flex; justify-content: space-between; border-bottom: none;}
+            .print-meta-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #000; }
+            .print-meta-cell { padding: 8px; border: 1px solid #000; }
+            .print-table { width: 100%; border-collapse: collapse; margin-top: -1px; }
+            .print-table th, .print-table td { border: 1px solid #000; padding: 6px; text-align: left; }
+            .print-table th { background: #eee !important; -webkit-print-color-adjust: exact; }
+            .print-totals-wrapper { border: 1px solid #000; border-top: none; padding: 10px; text-align: right; }
+            .print-footer-grid { display: grid; grid-template-columns: 1fr 1.5fr; border: 1px solid #000; border-top: none; }
+            .print-sign-area { text-align: right; padding: 10px; border-left: 1px solid #000;}
         }
     </style>
 </head>
@@ -140,7 +135,6 @@
 
 <div class="container">
     <header>
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
         <div class="brand-title">The Sarkar Advertisements</div>
         <div class="brand-tagline">Grow Your Business Adverties with us</div>
     </header>
@@ -206,37 +200,34 @@
     <div id="invoiceSection" class="app-section">
         <div class="card">
             <div id="editModeBanner" class="edit-badge">✏️ EDITING INVOICE MODE</div>
-            <h3 style="margin-bottom: 15px; color: var(--primary);" id="invoiceFormTitle">🧾 New Formal Invoice</h3>
+            <h3 style="margin-bottom: 15px; color: var(--primary);" id="invoiceFormTitle">🧾 New Sarkar Invoice</h3>
             
             <div class="input-group">
-                <label>Client Name:</label><input type="text" id="invClientName" placeholder="e.g., Acme Corp">
+                <label>Buyer (Bill to):</label><input type="text" id="invClientName" placeholder="Vansal Narain Udyog">
             </div>
             <div class="input-group">
-                <label>Client Address:</label><textarea id="invClientAddress" rows="2" placeholder="Full Address"></textarea>
+                <label>Address:</label><textarea id="invClientAddress" rows="2" placeholder="Khanpur, Akbarpur"></textarea>
             </div>
             <div class="input-group">
-                <label>Client GSTIN:</label><input type="text" id="invClientGST" placeholder="22AAAAA0000A1Z5">
+                <label>Buyer GSTIN:</label><input type="text" id="invClientGST" placeholder="09AANPA8434B2ZV">
             </div>
             
             <hr style="border:0; border-top:1px solid #E5E7EB; margin:20px 0;">
-            <h4 style="margin-bottom: 10px;">Line Items</h4>
+            <h4 style="margin-bottom: 10px;">Particulars</h4>
             
             <div class="invoice-table-wrapper">
                 <table class="invoice-table">
-                    <thead><tr><th style="width: 45%;">Description</th><th style="width: 20%;">Qty</th><th style="width: 25%;">Rate (₹)</th><th style="width: 10%;">Del</th></tr></thead>
+                    <thead><tr><th style="width: 40%;">Description</th><th style="width: 15%;">HSN</th><th style="width: 15%;">Qty</th><th style="width: 20%;">Rate</th><th style="width: 10%;">Del</th></tr></thead>
                     <tbody id="invoiceItemsBody"></tbody>
                 </table>
             </div>
             <button onclick="addInvoiceRow()" class="btn-secondary" style="margin-bottom: 20px;">+ Add Item</button>
 
-            <div class="input-group">
-                <label>GST Percentage (%):</label><input type="number" id="invGSTRate" value="18" onchange="calculateInvoice()">
-            </div>
-
             <div class="totals-box">
-                <div class="totals-row"><span>Subtotal:</span> <span id="lblSubtotal">₹0.00</span></div>
-                <div class="totals-row"><span>GST Amount:</span> <span id="lblGST">₹0.00</span></div>
-                <div class="totals-row grand"><span>Grand Total:</span> <span id="lblTotal">₹0.00</span></div>
+                <div class="totals-row"><span>Taxable Value:</span> <span id="lblSubtotal">₹0.00</span></div>
+                <div class="totals-row"><span>CGST (9%):</span> <span id="lblCGST">₹0.00</span></div>
+                <div class="totals-row"><span>SGST (9%):</span> <span id="lblSGST">₹0.00</span></div>
+                <div class="totals-row grand"><span>Total Amount:</span> <span id="lblTotal">₹0.00</span></div>
             </div>
 
             <button onclick="saveInvoice()" id="btnSaveInvoice" class="btn-primary">💾 Save Invoice Securely</button>
@@ -258,36 +249,78 @@
 <div id="printableInvoice">
     <div class="print-header">
         <div>
-            <h1>The Sarkar Advertisements</h1>
-            <p>Grow Your Business Adverties with us</p>
-            <p><strong>GSTIN:</strong> 09XXXXXXXXXXXXX (Your Company GST)</p>
-            <p><strong>Address:</strong> Your Business Address Line, City, State, PIN</p>
+            <strong style="font-size: 16px;">The Sarkar Advertisement (2026-27)</strong><br>
+            A-661, World Bank, Barra<br>
+            Kanpur Nagar, Uttar Pradesh -09<br>
+            GSTIN/UIN: 09BNDPR3338D1Z0<br>
+            State Name: Uttar Pradesh, Code: 09
         </div>
         <div style="text-align: right;">
-            <h2 style="color: #555; margin-bottom: 5px;">TAX INVOICE</h2>
-            <p><strong>Invoice No:</strong> <span id="printInvNo">INV-0001</span></p>
-            <p><strong>Date:</strong> <span id="printInvDate">dd/mm/yyyy</span></p>
+            <h2 style="margin: 0; border-bottom: 1px solid #000;">TAX INVOICE</h2>
+            <br>
+            <strong>Invoice No:</strong> <span id="printInvNo">01</span><br>
+            <strong>Dated:</strong> <span id="printInvDate">7-Apr-26</span>
         </div>
     </div>
-    <div class="print-meta">
-        <div class="print-box">
-            <h3>Billed To:</h3>
-            <p><strong id="printClientName">Client Name</strong></p>
-            <p id="printClientAddress">Client Address</p>
-            <p><strong>GSTIN:</strong> <span id="printClientGST">N/A</span></p>
+    
+    <div class="print-meta-grid">
+        <div class="print-meta-cell">
+            <strong>Buyer (Bill to)</strong><br>
+            <span id="printClientName" style="font-weight: bold;"></span><br>
+            <span id="printClientAddress"></span><br>
+            <strong>GSTIN:</strong> <span id="printClientGST"></span>
+        </div>
+        <div class="print-meta-cell">
+            <strong>Destination:</strong> Gomti Nagar, Lucknow<br>
+            <strong>State:</strong> Uttar Pradesh (09)
         </div>
     </div>
+
     <table class="print-table">
-        <thead><tr><th>S.No</th><th>Item Description</th><th>Quantity</th><th>Rate (₹)</th><th>Amount (₹)</th></tr></thead>
+        <thead>
+            <tr>
+                <th>SI No.</th>
+                <th>Particulars</th>
+                <th>HSN/SAC</th>
+                <th>Quantity</th>
+                <th>Rate</th>
+                <th>per</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
         <tbody id="printItemsBody"></tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6" style="text-align: right;">Output CGST @ 9%</td>
+                <td id="printCGST">0.00</td>
+            </tr>
+            <tr>
+                <td colspan="6" style="text-align: right;">Output SGST @ 9%</td>
+                <td id="printSGST">0.00</td>
+            </tr>
+            <tr>
+                <td colspan="6" style="text-align: right; font-weight: bold;">Total</td>
+                <td id="printGrandTotal" style="font-weight: bold;">0.00</td>
+            </tr>
+        </tfoot>
     </table>
-    <div class="print-totals">
-        <div class="print-totals-row"><span>Subtotal:</span> <strong id="printSubtotal">₹0.00</strong></div>
-        <div class="print-totals-row"><span>GST (<span id="printGSTRate">18</span>%):</span> <strong id="printGSTAmount">₹0.00</strong></div>
-        <div class="print-totals-row grand"><span>Total Amount:</span> <strong id="printGrandTotal">₹0.00</strong></div>
-        <p style="text-align: right; font-size: 12px; margin-top: 5px;">(Words: <span id="printWords"></span>)</p>
+
+    <div class="print-totals-wrapper">
+        <strong>Amount Chargeable (in words):</strong><br>
+        INR <span id="printWords"></span>
     </div>
-    <div class="print-footer"><div class="print-sign"><strong>For The Sarkar Advertisements</strong><br><br><br>Authorized Signatory</div></div>
+
+    <div class="print-footer-grid">
+        <div style="padding: 10px;">
+            E. & O.E.
+        </div>
+        <div class="print-sign-area">
+            for <strong>The Sarkar Advertisement (2026-27)</strong>
+            <br><br><br>
+            Authorised Signatory
+        </div>
+    </div>
+    <p style="text-align: center; font-size: 10px; margin-top: 5px;">This is a Computer Generated Invoice</p>
 </div>
 
 <script>
@@ -330,7 +363,9 @@
             };
             request.onsuccess = (e) => { 
                 db = e.target.result; 
-                loadDashboardData(); updateGalleryUI(); addInvoiceRow(); resolve(); 
+                loadDashboardData(); updateGalleryUI(); 
+                if(invItems.length === 0) addInvoiceRow("Advertiesment Services", "8307");
+                resolve(); 
             };
         });
     }
@@ -370,7 +405,7 @@
         let totalRev = 0, totalGST = 0;
         invoices.forEach(inv => {
             totalRev += inv.totals.total;
-            totalGST += inv.totals.gstAmount;
+            totalGST += (inv.totals.cgst + inv.totals.sgst);
         });
 
         document.getElementById('dashRevenue').innerText = `₹${totalRev.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
@@ -382,8 +417,8 @@
     // ==========================================
     // 🧾 INVOICE GENERATOR & EDIT LOGIC
     // ==========================================
-    function addInvoiceRow() {
-        invItems.push({ id: Date.now() + Math.random(), desc: '', qty: 1, rate: 0 });
+    function addInvoiceRow(desc = '', hsn = '') {
+        invItems.push({ id: Date.now() + Math.random(), desc: desc, hsn: hsn, qty: 0, rate: 0 });
         renderInvoiceTable();
     }
 
@@ -395,7 +430,10 @@
 
     function updateItem(id, field, value) {
         const item = invItems.find(i => i.id === id);
-        if(item) { item[field] = field === 'desc' ? value : parseFloat(value) || 0; calculateInvoice(); }
+        if(item) { 
+            item[field] = (field === 'desc' || field === 'hsn') ? value : parseFloat(value) || 0; 
+            calculateInvoice(); 
+        }
     }
 
     function renderInvoiceTable() {
@@ -404,9 +442,10 @@
         invItems.forEach(item => {
             tbody.innerHTML += `
                 <tr class="item-row">
-                    <td><input type="text" placeholder="Item Name" value="${item.desc}" onkeyup="updateItem(${item.id}, 'desc', this.value)"></td>
-                    <td><input type="number" min="1" value="${item.qty}" onchange="updateItem(${item.id}, 'qty', this.value)"></td>
-                    <td><input type="number" min="0" value="${item.rate}" onchange="updateItem(${item.id}, 'rate', this.value)"></td>
+                    <td><input type="text" placeholder="Service" value="${item.desc}" onkeyup="updateItem(${item.id}, 'desc', this.value)"></td>
+                    <td><input type="text" placeholder="8307" value="${item.hsn}" onkeyup="updateItem(${item.id}, 'hsn', this.value)"></td>
+                    <td><input type="number" value="${item.qty}" onchange="updateItem(${item.id}, 'qty', this.value)"></td>
+                    <td><input type="number" value="${item.rate}" onchange="updateItem(${item.id}, 'rate', this.value)"></td>
                     <td style="text-align:center;"><button class="delete-row-btn" onclick="removeInvoiceRow(${item.id})">✖</button></td>
                 </tr>`;
         });
@@ -416,14 +455,15 @@
     function calculateInvoice() {
         let subtotal = 0;
         invItems.forEach(item => subtotal += (item.qty * item.rate));
-        const gstRate = parseFloat(document.getElementById('invGSTRate').value) || 0;
-        const gstAmount = subtotal * (gstRate / 100);
-        const total = subtotal + gstAmount;
+        const cgst = subtotal * 0.09;
+        const sgst = subtotal * 0.09;
+        const total = subtotal + cgst + sgst;
 
         document.getElementById('lblSubtotal').innerText = `₹${subtotal.toFixed(2)}`;
-        document.getElementById('lblGST').innerText = `₹${gstAmount.toFixed(2)}`;
+        document.getElementById('lblCGST').innerText = `₹${cgst.toFixed(2)}`;
+        document.getElementById('lblSGST').innerText = `₹${sgst.toFixed(2)}`;
         document.getElementById('lblTotal').innerText = `₹${total.toFixed(2)}`;
-        return { subtotal, gstRate, gstAmount, total };
+        return { subtotal, cgst, sgst, total };
     }
 
     async function saveInvoice() {
@@ -434,8 +474,8 @@
         if(finalItems.length === 0) return showStatus("❌ Add at least one valid item!", "error");
 
         const totals = calculateInvoice();
-        let invoiceNo = "INV-" + Math.floor(1000 + Math.random() * 9000);
-        let date = new Date().toLocaleDateString();
+        let invoiceNo = editingInvoiceId ? "" : "INV-" + Math.floor(1000 + Math.random() * 9000);
+        let date = new Date().toLocaleDateString('en-GB');
         
         if (editingInvoiceId) {
             const oldInv = await getOneFromDB('invoices', editingInvoiceId);
@@ -465,7 +505,6 @@
         document.getElementById('invClientName').value = inv.clientName;
         document.getElementById('invClientAddress').value = inv.clientAddress;
         document.getElementById('invClientGST').value = inv.clientGST;
-        document.getElementById('invGSTRate').value = inv.totals.gstRate;
         
         invItems = inv.items; 
         renderInvoiceTable();
@@ -484,10 +523,10 @@
         document.getElementById('invClientName').value = '';
         document.getElementById('invClientAddress').value = '';
         document.getElementById('invClientGST').value = '';
-        invItems = []; addInvoiceRow();
+        invItems = []; addInvoiceRow("Advertiesment Services", "8307");
         
         document.getElementById('editModeBanner').style.display = 'none';
-        document.getElementById('invoiceFormTitle').innerText = "🧾 New Formal Invoice";
+        document.getElementById('invoiceFormTitle').innerText = "🧾 New Sarkar Invoice";
         document.getElementById('btnSaveInvoice').innerText = "💾 Save Invoice Securely";
         document.getElementById('btnCancelEdit').style.display = 'none';
     }
@@ -528,9 +567,9 @@
         const invoices = await getAllFromDB('invoices');
         if(invoices.length === 0) return showStatus("No invoices to export", "info");
         
-        let csvContent = "data:text/csv;charset=utf-8,Invoice No,Date,Client Name,GSTIN,Subtotal,GST Amount,Grand Total\n";
+        let csvContent = "data:text/csv;charset=utf-8,Invoice No,Date,Client Name,GSTIN,Subtotal,CGST,SGST,Grand Total\n";
         invoices.forEach(inv => {
-            const row = `"${inv.invoiceNo}","${inv.date}","${inv.clientName}","${inv.clientGST}","${inv.totals.subtotal}","${inv.totals.gstAmount}","${inv.totals.total}"`;
+            const row = `"${inv.invoiceNo}","${inv.date}","${inv.clientName}","${inv.clientGST}","${inv.totals.subtotal}","${inv.totals.cgst}","${inv.totals.sgst}","${inv.totals.total}"`;
             csvContent += row + "\n";
         });
         
@@ -562,34 +601,30 @@
         document.getElementById('printClientName').innerText = inv.clientName;
         document.getElementById('printClientAddress').innerText = inv.clientAddress || 'N/A';
         document.getElementById('printClientGST').innerText = inv.clientGST || 'N/A';
+        
         const tbody = document.getElementById('printItemsBody'); tbody.innerHTML = '';
         inv.items.forEach((item, index) => {
-            tbody.innerHTML += `<tr><td>${index + 1}</td><td>${item.desc}</td><td>${item.qty}</td><td>₹${item.rate.toFixed(2)}</td><td>₹${(item.qty * item.rate).toFixed(2)}</td></tr>`;
+            tbody.innerHTML += `<tr><td>${index + 1}</td><td>${item.desc}</td><td>${item.hsn}</td><td>${item.qty}</td><td>${item.rate.toFixed(2)}</td><td>sqft.</td><td>${(item.qty * item.rate).toFixed(2)}</td></tr>`;
         });
-        document.getElementById('printSubtotal').innerText = `₹${inv.totals.subtotal.toFixed(2)}`;
-        document.getElementById('printGSTRate').innerText = inv.totals.gstRate;
-        document.getElementById('printGSTAmount').innerText = `₹${inv.totals.gstAmount.toFixed(2)}`;
-        document.getElementById('printGrandTotal').innerText = `₹${inv.totals.total.toFixed(2)}`;
+        
+        document.getElementById('printCGST').innerText = inv.totals.cgst.toFixed(2);
+        document.getElementById('printSGST').innerText = inv.totals.sgst.toFixed(2);
+        document.getElementById('printGrandTotal').innerText = inv.totals.total.toFixed(2);
         document.getElementById('printWords').innerText = numberToWords(Math.round(inv.totals.total));
         window.print();
     }
 
     // ==========================================
-    // 📸 PHOTO MAPPER LOGIC (Upgraded Parallel Geolocation)
+    // 📸 PHOTO MAPPER LOGIC (Original Preservation)
     // ==========================================
     let currentDraftPhoto = { image: null, lat: null, lng: null };
 
     document.getElementById('cameraInput').addEventListener('change', async (e) => {
         if (e.target.files.length === 0) return;
-        
         showStatus("⏳ Processing image & fetching GPS...", "info");
-        document.getElementById('locationInput').value = "Acquiring GPS coordinates...";
-        document.getElementById('savePhotoBtn').disabled = true;
         document.getElementById('previewSection').style.display = 'block';
-        
         const file = e.target.files[0];
-
-        // Process Image
+        
         const compressPromise = new Promise(resolve => {
             const reader = new FileReader();
             reader.onload = ev => {
@@ -606,89 +641,54 @@
             reader.readAsDataURL(file);
         });
 
-        // Process GPS at the exact same time
         const gpsPromise = new Promise(resolve => {
-            if (!navigator.geolocation) {
-                resolve({ error: "GPS not supported by browser." });
-                return;
-            }
             navigator.geolocation.getCurrentPosition(
                 (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-                (err) => {
-                    let msg = "GPS error.";
-                    if(err.code === 1) msg = "Location permission denied.";
-                    if(err.code === 2) msg = "Device GPS turned off.";
-                    if(err.code === 3) msg = "GPS request timed out.";
-                    resolve({ error: msg });
-                },
-                { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+                (err) => resolve({ error: "GPS Error" }),
+                { enableHighAccuracy: true, timeout: 10000 }
             );
         });
 
-        // Wait for both to finish
         const [imgBase64, gpsResult] = await Promise.all([compressPromise, gpsPromise]);
-
         currentDraftPhoto.image = imgBase64;
         document.getElementById('previewImg').src = imgBase64;
-
-        if (gpsResult.error) {
-            currentDraftPhoto.lat = null;
-            currentDraftPhoto.lng = null;
-            document.getElementById('locationInput').value = "⚠️ " + gpsResult.error + " (Type manually)";
-            showStatus("⚠️ " + gpsResult.error, "error");
-        } else {
-            currentDraftPhoto.lat = gpsResult.lat;
-            currentDraftPhoto.lng = gpsResult.lng;
-            document.getElementById('locationInput').value = `Lat: ${gpsResult.lat.toFixed(5)}, Lng: ${gpsResult.lng.toFixed(5)}`;
-            showStatus("✅ Location found!", "success");
-        }
-        
+        document.getElementById('locationInput').value = gpsResult.error ? "Location manual" : `Lat: ${gpsResult.lat.toFixed(4)}, Lng: ${gpsResult.lng.toFixed(4)}`;
         document.getElementById('savePhotoBtn').disabled = false;
     });
 
     document.getElementById('savePhotoBtn').addEventListener('click', async () => {
-        await putToDB('photos', { image: currentDraftPhoto.image, lat: currentDraftPhoto.lat, lng: currentDraftPhoto.lng, locationText: document.getElementById('locationInput').value, time: new Date().toLocaleString() });
+        await putToDB('photos', { image: currentDraftPhoto.image, locationText: document.getElementById('locationInput').value, time: new Date().toLocaleString() });
         showStatus("✅ Photo saved!", "success"); 
         document.getElementById('previewSection').style.display = 'none'; 
-        document.getElementById('cameraInput').value = ''; 
         updateGalleryUI();
-        loadDashboardData(); // Update dashboard count
+        loadDashboardData();
     });
 
     async function updateGalleryUI() {
         const photos = await getAllFromDB('photos');
         document.getElementById('photoCount').textContent = photos.length;
-        document.getElementById('gallery').innerHTML = photos.length > 0 ? photos.map((p, i) => `
-            <div class="photo-card"><img src="${p.image}"><div class="photo-details"><div>🕒 ${p.time}</div><div>📍 ${p.locationText}</div></div></div>`).join('') : '<p style="text-align:center;">No photos.</p>';
+        document.getElementById('gallery').innerHTML = photos.length > 0 ? photos.map(p => `<div class="photo-card"><img src="${p.image}"><div class="photo-details">🕒 ${p.time}</div></div>`).join('') : '<p>No photos.</p>';
         document.getElementById('generateBtn').disabled = photos.length === 0;
     }
 
     document.getElementById('generateBtn').addEventListener('click', async () => {
-        showStatus("⏳ Preparing PPT...", "info"); document.getElementById('generateBtn').disabled = true;
-        try {
-            const photos = await getAllFromDB('photos'); let pptx = new PptxGenJS(); pptx.layout = 'LAYOUT_WIDE';
-            let slide1 = pptx.addSlide(); slide1.addText("The Sarkar Advertisements", { x:1, y:1.5, w:'80%', h:1, fontSize:36, align:'center', bold:true, color:'F37A20' });
-            photos.forEach((p, i) => {
-                let slide = pptx.addSlide(); slide.addText(`Stop #${i + 1}`, { x: 0.5, y: 0.2, w: '90%', h: 0.5, fontSize: 24, bold: true, color: 'F37A20' });
-                slide.addImage({ data: p.image, x: 0.5, y: 0.8, w: '50%', h: '80%', sizing: { type: 'contain' } });
-                let texts = [{ text: "Time:\n", options: { bold: true, color: '6B7280' } }, { text: `${p.time}\n\n` }, { text: "Location:\n", options: { bold: true, color: '6B7280' } }, { text: `${p.locationText}\n\n` }];
-                if(p.lat) texts.push({ text: "📍 Open Map", options: { hyperlink: { url: `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}` }, color: 'F37A20', underline: true } });
-                slide.addText(texts, { x: '58%', y: 1.5, w: '40%', h: 4, align: 'left', fill: { color: 'FFF7ED' } });
-            });
-            await pptx.writeFile({ fileName: `Route-Report-${Date.now()}.pptx` }); showStatus("✅ PPT Downloaded!", "success");
-        } catch (e) { showStatus("❌ Error generating PPT.", "error"); } finally { document.getElementById('generateBtn').disabled = false; }
+        const photos = await getAllFromDB('photos');
+        let pptx = new PptxGenJS();
+        photos.forEach((p, i) => {
+            let slide = pptx.addSlide();
+            slide.addImage({ data: p.image, x: 0.5, y: 0.5, w: 5, h: 4 });
+            slide.addText(`Location: ${p.locationText}\nTime: ${p.time}`, { x: 6, y: 1, w: 3, fontSize: 14 });
+        });
+        pptx.writeFile({ fileName: 'Route_Report.pptx' });
     });
 
     document.getElementById('clearPhotosBtn').addEventListener('click', async () => { 
-        if(confirm("Delete all route photos?")) { 
+        if(confirm("Clear route data?")) { 
             await db.transaction(['photos'], 'readwrite').objectStore('photos').clear(); 
-            updateGalleryUI(); 
-            loadDashboardData();
-            showStatus("🗑️ Route Cleared.", "success"); 
+            updateGalleryUI(); loadDashboardData();
         } 
     });
 
-    // Boot Up
     window.addEventListener('DOMContentLoaded', initDB);
 </script>
 </body>
