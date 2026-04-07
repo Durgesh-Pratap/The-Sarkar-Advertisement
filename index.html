@@ -4,111 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Sarkar Advertisements Workspace</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <style>
         :root {
-            --primary: #F37A20; 
+            --primary: #F37A20;
             --primary-hover: #D96915;
             --bg: #F0F2F5;
             --card-bg: #FFFFFF;
             --text-main: #444;
             --border-color: #E2E8F0;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg); color: var(--text-main);
-            padding: 15px; min-height: 100vh;
-        }
-
-        .container { max-width: 1000px; margin: 0 auto; width: 100%;}
-
-        /* Modern Nav Bar (Screenshot Style) */
-        .nav-bar { 
-            display: flex; 
-            background: #DDE2E9; 
-            padding: 8px; 
-            border-radius: 12px; 
-            gap: 8px; 
-            margin-bottom: 25px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .nav-item {
-            flex: 1; padding: 12px; text-align: center; cursor: pointer;
-            font-weight: 600; font-size: 0.9rem; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            color: #556; transition: 0.2s;
-        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); color: var(--text-main); padding: 15px; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; width: 100%; }
+        .nav-bar { display: flex; background: #DDE2E9; padding: 8px; border-radius: 12px; gap: 8px; margin-bottom: 25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        .nav-item { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-weight: 600; font-size: 0.9rem; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; color: #556; transition: 0.2s; }
         .nav-item.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
         .app-section { display: none; }
         .app-section.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
         .card { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .form-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-
-        /* Input Styling from Screenshot */
         .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.85rem; color: #667; }
-        .input-group input, .input-group textarea { 
-            width: 100%; padding: 12px; border: 1.5px solid var(--border-color); 
-            border-radius: 10px; font-size: 14px; transition: 0.2s;
-        }
-
-        /* Party Boxes (Buyer/Consignee) */
-        .party-box { 
-            background: #F8FAFC; border: 1.5px solid var(--border-color); 
-            padding: 15px; border-radius: 15px;
-        }
-        .party-box label { color: var(--primary); font-size: 0.9rem; font-weight: 800; display: block; margin-bottom: 10px; }
-
-        /* Table Styling */
+        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 12px; border: 1.5px solid var(--border-color); border-radius: 10px; font-size: 14px; transition: 0.2s; }
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus { outline: none; border-color: var(--primary); }
+        .party-box { background: #F8FAFC; border: 1.5px solid var(--border-color); padding: 15px; border-radius: 15px; }
+        .party-box > label { color: var(--primary); font-size: 0.9rem; font-weight: 800; display: block; margin-bottom: 10px; }
+        .party-box input, .party-box textarea { width: 100%; padding: 10px; border: 1.5px solid var(--border-color); border-radius: 8px; font-size: 14px; margin-bottom: 8px; }
         .table-container { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid var(--border-color); }
         table { width: 100%; border-collapse: collapse; background: white; }
-        th { background: #F1F5F9; padding: 12px; text-align: left; font-size: 0.8rem; border-bottom: 2px solid var(--border-color); }
-        td { padding: 10px; border-bottom: 1px solid var(--border-color); }
-        table input { border: 1px solid #ddd; padding: 6px; border-radius: 5px; width: 100%; }
+        th { background: #F1F5F9; padding: 12px; text-align: left; font-size: 0.8rem; border-bottom: 2px solid var(--border-color); white-space: nowrap; }
+        td { padding: 8px; border-bottom: 1px solid var(--border-color); }
+        table input { border: 1px solid #ddd; padding: 6px; border-radius: 5px; width: 100%; font-size: 13px; }
+        .btn-main { background: var(--primary); color: white; padding: 16px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; font-size: 1rem; }
+        .btn-main:hover { background: var(--primary-hover); }
+        .totals-box { text-align: right; background: #F8FAFC; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .totals-box .grand { font-size: 1.2rem; font-weight: 800; color: var(--primary); margin-top: 5px; }
+        .gst-row { display: flex; justify-content: flex-end; gap: 30px; font-size: 0.88rem; color: #556; margin-bottom: 3px; }
 
-        .btn-main { 
-            background: var(--primary); color: white; padding: 16px; border: none; 
-            border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; font-size: 1rem;
-        }
-
-        /* Print Template (Sarkar Official Grid) */
+        /* ======================== PRINT TEMPLATE ======================== */
         #printableInvoice { display: none; }
+
         @media print {
-            @page { margin: 10mm; }
+            @page { size: A4; margin: 8mm 10mm; }
             body * { visibility: hidden; }
             #printableInvoice, #printableInvoice * { visibility: visible; }
-            #printableInvoice { display: block; position: absolute; left: 0; top: 0; width: 100%; font-size: 10pt; color: #000; font-family: Arial, sans-serif; }
-            .p-border { border: 1px solid #000; }
-            .p-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #000; }
-            .p-cell { border: 0.5px solid #000; padding: 6px; min-height: 50px; }
-            .p-table { width: 100%; border-collapse: collapse; margin-top: -1px; }
-            .p-table th, .p-table td { border: 1px solid #000; padding: 5px; }
-            .p-table th { background: #eee !important; -webkit-print-color-adjust: exact; }
+            #printableInvoice {
+                display: block !important;
+                position: fixed;
+                left: 0; top: 0;
+                width: 100%;
+                font-size: 8.5pt;
+                font-family: Arial, sans-serif;
+                color: #000;
+                background: white;
+            }
         }
+
+        /* Print layout styles — always present so JS can read them */
+        .pi { font-family: Arial, sans-serif; font-size: 8.5pt; color: #000; border: 1.5px solid #000; }
+        .pi-center { text-align: center; padding: 4px; border-bottom: 1.5px solid #000; font-weight: bold; font-size: 11pt; letter-spacing: 1px; }
+        .pi-row { display: grid; border-bottom: 1px solid #000; }
+        .pi-row-2 { grid-template-columns: 60% 40%; }
+        .pi-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .pi-row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+        .pi-cell { border-right: 1px solid #000; padding: 5px 7px; min-height: 38px; vertical-align: top; }
+        .pi-cell:last-child { border-right: none; }
+        .pi-cell b { display: block; margin-bottom: 1px; }
+        .pi-label { font-size: 7.5pt; color: #333; }
+
+        /* Items table */
+        .pi-table { width: 100%; border-collapse: collapse; border-bottom: 1px solid #000; }
+        .pi-table th { border: 1px solid #000; padding: 4px 5px; background: #f0f0f0; font-size: 8pt; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .pi-table td { border: 1px solid #000; padding: 4px 5px; font-size: 8pt; }
+        .pi-table td.num { text-align: right; }
+        .pi-table td.center { text-align: center; }
+
+        /* GST summary table */
+        .pi-gst-table { width: 100%; border-collapse: collapse; }
+        .pi-gst-table th { border: 1px solid #000; padding: 4px 5px; background: #f0f0f0; font-size: 7.5pt; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .pi-gst-table td { border: 1px solid #000; padding: 4px 5px; font-size: 8pt; text-align: right; }
+        .pi-gst-table td.left { text-align: left; }
+
+        .pi-amount-words { border-bottom: 1px solid #000; padding: 5px 7px; font-size: 8pt; }
+        .pi-tax-words { border-bottom: 1px solid #000; padding: 5px 7px; font-size: 8pt; }
+        .pi-footer { display: grid; grid-template-columns: 65% 35%; }
+        .pi-footer-left { border-right: 1px solid #000; padding: 5px 7px; font-size: 7.5pt; }
+        .pi-footer-right { padding: 5px 7px; font-size: 7.5pt; text-align: right; }
+        .pi-computer { text-align: center; padding: 3px; font-size: 7pt; color: #555; border-top: 1px solid #000; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="nav-bar">
-        <div class="nav-item" onclick="switchTab('dashboard')">📊 Dashboard</div>
-        <div class="nav-item" onclick="switchTab('mapper')">📷 Route Mapper</div>
-        <div class="nav-item active" id="nav-invoice" onclick="switchTab('invoice')">📄 Invoice Form</div>
-        <div class="nav-item" onclick="switchTab('history')">📂 Saved Invoices</div>
+        <div class="nav-item" onclick="switchTab('dashboard', event)">📊 Dashboard</div>
+        <div class="nav-item" onclick="switchTab('mapper', event)">📷 Route Mapper</div>
+        <div class="nav-item active" onclick="switchTab('invoice', event)">📄 Invoice Form</div>
+        <div class="nav-item" onclick="switchTab('history', event)">📂 Saved Invoices</div>
     </div>
 
+    <!-- INVOICE SECTION -->
     <div id="invoiceSection" class="app-section active">
         <div class="card">
-            <div class="form-title">📄 Tax Invoice Form</div>
-            
+            <div class="form-title">📄 Tax Invoice — The Sarkar Advertisement (2026-27)</div>
+
             <div class="input-grid">
                 <div class="input-group"><label>Invoice No.</label><input type="text" id="invNo" value="01"></div>
                 <div class="input-group"><label>Date</label><input type="date" id="invDate"></div>
@@ -117,15 +117,17 @@
             <div class="input-grid">
                 <div class="party-box">
                     <label>Buyer (Bill to)</label>
-                    <input type="text" id="bName" placeholder="Name" style="margin-bottom:8px;">
+                    <input type="text" id="bName" placeholder="Name">
                     <textarea id="bAddr" placeholder="Full Address" rows="2"></textarea>
-                    <input type="text" id="bGST" placeholder="GSTIN/UIN" style="margin-top:8px;">
+                    <input type="text" id="bGST" placeholder="GSTIN/UIN">
+                    <input type="text" id="bState" placeholder="State Name & Code" value="Uttar Pradesh, Code : 09">
                 </div>
                 <div class="party-box">
                     <label>Consignee (Ship to)</label>
-                    <input type="text" id="cName" placeholder="Name" style="margin-bottom:8px;">
+                    <input type="text" id="cName" placeholder="Name">
                     <textarea id="cAddr" placeholder="Full Address" rows="2"></textarea>
-                    <input type="text" id="cGST" placeholder="GSTIN/UIN" style="margin-top:8px;">
+                    <input type="text" id="cGST" placeholder="GSTIN/UIN">
+                    <input type="text" id="cState" placeholder="State Name & Code" value="Uttar Pradesh, Code : 09">
                 </div>
             </div>
 
@@ -135,69 +137,197 @@
                 <div class="input-group"><label>Dispatch Doc No.</label><input type="text" id="logDispatch"></div>
                 <div class="input-group"><label>Destination</label><input type="text" id="logDest" value="Lucknow"></div>
                 <div class="input-group"><label>Motor Vehicle No.</label><input type="text" id="logVehicle" value="UP78LT2767"></div>
-                <div class="input-group"><label>Reference No.</label><input type="text" id="logRef"></div>
+                <div class="input-group"><label>Reference No. & Date</label><input type="text" id="logRef"></div>
+                <div class="input-group"><label>Buyer's Order No.</label><input type="text" id="logBuyerOrder"></div>
+                <div class="input-group"><label>Dispatched through</label><input type="text" id="logDispThrough"></div>
             </div>
 
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Particulars</th><th>HSN</th><th>Qty</th><th>Rate</th><th>Per</th><th>Total</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Sl.</th>
+                            <th>Particulars</th>
+                            <th>HSN/SAC</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Per</th>
+                            <th>Amount (₹)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
                     <tbody id="invoiceItemsBody"></tbody>
                 </table>
             </div>
-            <button onclick="addRow()" style="background:#E2E8F0; border:none; padding:10px; border-radius:8px; cursor:pointer; margin-bottom:20px;">+ Add Line Item</button>
+            <button onclick="addRow()" style="background:#E2E8F0; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; margin-bottom:20px; font-weight:600;">+ Add Line Item</button>
 
-            <div style="text-align: right; background: #F8FAFC; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-                <div style="font-size: 0.9rem;">Taxable: ₹<span id="lblTaxable">0.00</span></div>
-                <div style="font-size: 0.9rem;">GST (18%): ₹<span id="lblTax">0.00</span></div>
-                <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">Grand Total: ₹<span id="lblTotal">0.00</span></div>
+            <div class="totals-box">
+                <div class="gst-row"><span>Taxable Amount:</span><span>₹<span id="lblTaxable">0.00</span></span></div>
+                <div class="gst-row"><span>CGST @ 9%:</span><span>₹<span id="lblCGST">0.00</span></span></div>
+                <div class="gst-row"><span>SGST @ 9%:</span><span>₹<span id="lblSGST">0.00</span></span></div>
+                <div class="gst-row"><span>Round Off:</span><span>₹<span id="lblRound">0.00</span></span></div>
+                <div class="grand">Grand Total: ₹<span id="lblTotal">0.00</span></div>
             </div>
 
-            <button class="btn-main" onclick="saveAndPrint()">💾 Save & Print Official Invoice</button>
+            <button class="btn-main" onclick="saveAndPrint()">🖨️ Save &amp; Print Official Invoice</button>
         </div>
     </div>
 
+    <!-- DASHBOARD SECTION -->
     <div id="dashboardSection" class="app-section">
-        <div class="card"><h3>📊 Dashboard</h3><div id="dashStats">Loading...</div></div>
+        <div class="card"><h3>📊 Dashboard</h3><div id="dashStats" style="margin-top:15px; color:#888;">No data yet.</div></div>
     </div>
-    
+
+    <!-- ROUTE MAPPER SECTION -->
     <div id="mapperSection" class="app-section">
         <div class="card">
             <h3>📷 Route Mapper</h3>
-            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="processPhoto(event)">
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="processPhoto(event)" style="margin-top:15px;">
             <div id="gallery" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;"></div>
         </div>
     </div>
 
+    <!-- HISTORY SECTION -->
     <div id="historySection" class="app-section">
-        <div class="card"><h3>📂 History</h3><div id="historyList"></div></div>
+        <div class="card"><h3>📂 Saved Invoices</h3><div id="historyList" style="margin-top:15px; color:#888;">No saved invoices.</div></div>
     </div>
 </div>
 
+<!-- ===================== PRINTABLE INVOICE (PDF-matching format) ===================== -->
 <div id="printableInvoice">
-    <div class="p-border">
-        <div style="text-align:center; padding:5px; border-bottom:1px solid #000; font-weight:bold;">Tax Invoice</div>
-        <div class="p-grid">
-            <div class="p-cell"><strong>The Sarkar Advertisement (2026-27)</strong><br>A-661, World Bank, Barra, Kanpur Nagar, UP<br>GSTIN: 09BNDPR3338D1Z0</div>
-            <div class="p-cell">
-                <strong>Invoice No:</strong> <span id="p-invNo"></span><br>
-                <strong>Dated:</strong> <span id="p-invDate"></span><br>
-                <strong>Delivery Note:</strong> <span id="p-delNote"></span><br>
-                <strong>Mode of Payment:</strong> <span id="p-payMode"></span>
+    <div class="pi">
+
+        <!-- Title -->
+        <div class="pi-center">Tax Invoice</div>
+
+        <!-- Row 1: Seller Info | Invoice details -->
+        <div class="pi-row pi-row-2">
+            <div class="pi-cell">
+                <b style="font-size:9.5pt;">The Sarkar Advertisement (2026-27)</b>
+                A-661, World Bank, Barra, Kanpur Nagar, UP<br>
+                <span class="pi-label">GSTIN/UIN: 09BNDPR3338D1Z0</span><br>
+                <span class="pi-label">State Name: Uttar Pradesh, Code: 09</span>
+            </div>
+            <div class="pi-cell">
+                <table style="width:100%; border:none; border-collapse:collapse; font-size:8pt;">
+                    <tr><td style="width:45%; color:#555; padding:1px 0;">Invoice No.</td><td style="padding:1px 0;"><b id="p-invNo"></b></td></tr>
+                    <tr><td style="color:#555; padding:1px 0;">Dated</td><td style="padding:1px 0;" id="p-invDate"></td></tr>
+                    <tr><td style="color:#555; padding:1px 0;">Delivery Note</td><td style="padding:1px 0;" id="p-delNote"></td></tr>
+                    <tr><td style="color:#555; padding:1px 0;">Mode/Terms of Payment</td><td style="padding:1px 0;" id="p-payMode"></td></tr>
+                </table>
             </div>
         </div>
-        <div class="p-grid">
-            <div class="p-cell"><strong>Consignee:</strong> <span id="p-cName"></span><br><span id="p-cAddr"></span><br>GST: <span id="p-cGST"></span></div>
-            <div class="p-cell"><strong>Buyer:</strong> <span id="p-bName"></span><br><span id="p-bAddr"></span><br>GST: <span id="p-bGST"></span></div>
+
+        <!-- Row 2: Consignee | Buyer -->
+        <div class="pi-row pi-row-2">
+            <div class="pi-cell">
+                <span class="pi-label">Consignee (Ship to)</span><br>
+                <b id="p-cName"></b>
+                <span id="p-cAddr"></span><br>
+                <span class="pi-label">GSTIN/UIN: <span id="p-cGST"></span></span><br>
+                <span class="pi-label">State Name: <span id="p-cState"></span></span>
+            </div>
+            <div class="pi-cell">
+                <span class="pi-label">Buyer (Bill to)</span><br>
+                <b id="p-bName"></b>
+                <span id="p-bAddr"></span><br>
+                <span class="pi-label">GSTIN/UIN: <span id="p-bGST"></span></span><br>
+                <span class="pi-label">State Name: <span id="p-bState"></span></span>
+            </div>
         </div>
-        <div class="p-grid">
-            <div class="p-cell"><strong>Dispatch Doc No:</strong> <span id="p-dispatch"></span><br><strong>Destination:</strong> <span id="p-dest"></span></div>
-            <div class="p-cell"><strong>Vehicle No:</strong> <span id="p-veh"></span><br><strong>Ref:</strong> <span id="p-ref"></span></div>
+
+        <!-- Row 3: Dispatch info -->
+        <div class="pi-row pi-row-4">
+            <div class="pi-cell">
+                <span class="pi-label">Buyer's Order No.</span><br>
+                <span id="p-buyerOrder"></span>
+            </div>
+            <div class="pi-cell">
+                <span class="pi-label">Dispatch Doc No.</span><br>
+                <span id="p-dispatch"></span>
+            </div>
+            <div class="pi-cell">
+                <span class="pi-label">Dispatched through</span><br>
+                <span id="p-dispThrough"></span>
+            </div>
+            <div class="pi-cell">
+                <span class="pi-label">Destination</span><br>
+                <span id="p-dest"></span>
+            </div>
         </div>
-        <table class="p-table">
-            <thead><tr><th>SI</th><th>Particulars</th><th>HSN</th><th>Qty</th><th>Rate</th><th>Per</th><th>Amount</th></tr></thead>
+
+        <!-- Row 4: Vehicle / Ref -->
+        <div class="pi-row pi-row-2">
+            <div class="pi-cell">
+                <span class="pi-label">Motor Vehicle No.</span>&nbsp;&nbsp;<b id="p-veh"></b>
+            </div>
+            <div class="pi-cell">
+                <span class="pi-label">Reference No. &amp; Date</span>&nbsp;&nbsp;<span id="p-ref"></span>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <table class="pi-table">
+            <thead>
+                <tr>
+                    <th style="width:4%;">Sl No.</th>
+                    <th style="width:38%;">Particulars</th>
+                    <th style="width:10%;">HSN/SAC</th>
+                    <th style="width:10%;">Quantity</th>
+                    <th style="width:10%;">Rate</th>
+                    <th style="width:8%;">Per</th>
+                    <th style="width:20%; text-align:right;">Amount</th>
+                </tr>
+            </thead>
             <tbody id="p-itemsBody"></tbody>
+            <!-- Sub-totals inside items table -->
+            <tfoot id="p-itemsFoot"></tfoot>
         </table>
-        <div style="text-align:right; padding:10px; border:1px solid #000; border-top:none; font-weight:bold;">Grand Total: ₹<span id="p-grand"></span></div>
+
+        <!-- Amount in words -->
+        <div class="pi-amount-words">
+            <b>Amount Chargeable (in words)</b>&nbsp;&nbsp;
+            <span id="p-amtWords"></span>&nbsp;&nbsp;&nbsp;<span style="float:right;">E. &amp; O.E</span>
+        </div>
+
+        <!-- GST Summary Table -->
+        <table class="pi-gst-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="text-align:left;">HSN/SAC</th>
+                    <th rowspan="2">Taxable Value</th>
+                    <th colspan="2">CGST</th>
+                    <th colspan="2">SGST/UTGST</th>
+                    <th rowspan="2">Tax Amount</th>
+                </tr>
+                <tr>
+                    <th>Rate</th><th>Amount</th>
+                    <th>Rate</th><th>Amount</th>
+                </tr>
+            </thead>
+            <tbody id="p-gstBody"></tbody>
+            <tfoot id="p-gstFoot"></tfoot>
+        </table>
+
+        <!-- Tax in words -->
+        <div class="pi-tax-words">
+            <b>Tax Amount (in words):</b>&nbsp;<span id="p-taxWords"></span>
+            <span style="float:right;"><b>for The Sarkar Advertisement (2026-27)</b></span>
+        </div>
+
+        <!-- Footer: Terms | Signatory -->
+        <div class="pi-footer">
+            <div class="pi-footer-left">
+                <b>Terms of Delivery</b><br><br>
+                <span id="p-terms"></span>
+            </div>
+            <div class="pi-footer-right" style="min-height:55px;">
+                <br><br><br>
+                <b>Authorised Signatory</b>
+            </div>
+        </div>
+
+        <div class="pi-computer">This is a Computer Generated Invoice</div>
     </div>
 </div>
 
@@ -205,28 +335,40 @@
     let invItems = [];
     document.getElementById('invDate').valueAsDate = new Date();
 
-    function switchTab(tab) {
+    function switchTab(tab, event) {
         document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
         document.getElementById(tab + 'Section').classList.add('active');
-        // Handle nav styling
-        if(event) event.currentTarget.classList.add('active');
+        if (event && event.currentTarget) event.currentTarget.classList.add('active');
     }
 
     function addRow() {
         const id = Date.now();
+        const slNo = invItems.length + 1;
         invItems.push({ id, desc: 'Advertiesment Services', hsn: '8307', qty: 0, rate: 0, per: 'sqft.' });
         const tr = document.createElement('tr');
         tr.id = `row-${id}`;
         tr.innerHTML = `
+            <td style="text-align:center; width:35px;">${slNo}</td>
             <td><input type="text" value="Advertiesment Services" oninput="updateVal(${id}, 'desc', this.value)"></td>
-            <td><input type="text" value="8307" oninput="updateVal(${id}, 'hsn', this.value)"></td>
-            <td><input type="number" value="0" oninput="updateVal(${id}, 'qty', this.value)"></td>
-            <td><input type="number" value="0" oninput="updateVal(${id}, 'rate', this.value)"></td>
-            <td><input type="text" value="sqft." oninput="updateVal(${id}, 'per', this.value)"></td>
-            <td id="total-${id}">0.00</td>
+            <td><input type="text" value="8307" style="width:70px;" oninput="updateVal(${id}, 'hsn', this.value)"></td>
+            <td><input type="number" value="0" style="width:70px;" oninput="updateVal(${id}, 'qty', this.value)"></td>
+            <td><input type="number" value="0" style="width:70px;" oninput="updateVal(${id}, 'rate', this.value)"></td>
+            <td><input type="text" value="sqft." style="width:60px;" oninput="updateVal(${id}, 'per', this.value)"></td>
+            <td id="total-${id}" style="text-align:right; font-weight:600;">0.00</td>
+            <td><button onclick="removeRow(${id})" style="background:none;border:none;cursor:pointer;color:#e55;font-size:16px;">✕</button></td>
         `;
         document.getElementById('invoiceItemsBody').appendChild(tr);
+    }
+
+    function removeRow(id) {
+        invItems = invItems.filter(i => i.id !== id);
+        const row = document.getElementById(`row-${id}`);
+        if (row) row.remove();
+        // Re-number
+        const rows = document.querySelectorAll('#invoiceItemsBody tr');
+        rows.forEach((r, idx) => { r.cells[0].textContent = idx + 1; });
+        calc();
     }
 
     function updateVal(id, field, value) {
@@ -238,33 +380,180 @@
 
     function calc() {
         let sub = invItems.reduce((s, i) => s + (i.qty * i.rate), 0);
-        let tax = sub * 0.18;
+        let cgst = sub * 0.09;
+        let sgst = sub * 0.09;
+        let rawTotal = sub + cgst + sgst;
+        let rounded = Math.round(rawTotal);
+        let roundOff = rounded - rawTotal;
         document.getElementById('lblTaxable').innerText = sub.toFixed(2);
-        document.getElementById('lblTax').innerText = tax.toFixed(2);
-        document.getElementById('lblTotal').innerText = Math.round(sub + tax).toFixed(2);
+        document.getElementById('lblCGST').innerText = cgst.toFixed(2);
+        document.getElementById('lblSGST').innerText = sgst.toFixed(2);
+        document.getElementById('lblRound').innerText = roundOff.toFixed(2);
+        document.getElementById('lblTotal').innerText = rounded.toFixed(2);
+    }
+
+    // ---- Number to Words ----
+    function numberToWords(n) {
+        if (n === 0) return 'Zero';
+        const ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
+            'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+        const tens = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+
+        function helper(num) {
+            if (num === 0) return '';
+            if (num < 20) return ones[num] + ' ';
+            if (num < 100) return tens[Math.floor(num/10)] + (num%10 ? ' ' + ones[num%10] : '') + ' ';
+            if (num < 1000) return ones[Math.floor(num/100)] + ' Hundred ' + helper(num%100);
+            if (num < 100000) return helper(Math.floor(num/1000)) + 'Thousand ' + helper(num%1000);
+            if (num < 10000000) return helper(Math.floor(num/100000)) + 'Lakh ' + helper(num%100000);
+            return helper(Math.floor(num/10000000)) + 'Crore ' + helper(num%10000000);
+        }
+
+        let intPart = Math.floor(n);
+        let decPart = Math.round((n - intPart) * 100);
+        let result = 'INR ' + helper(intPart).trim();
+        if (decPart > 0) result += ' and ' + helper(decPart).trim() + ' Paise';
+        result += ' Only';
+        return result;
     }
 
     function saveAndPrint() {
-        // Map to Print
-        const map = (pId, fId) => { 
-            const el = document.getElementById(fId);
-            if(el) document.getElementById('p-'+pId).innerText = el.value; 
-        };
-        map('invNo', 'invNo'); map('invDate', 'invDate'); map('delNote', 'logDelNote'); map('payMode', 'logPayMode');
-        map('cName', 'cName'); map('cAddr', 'cAddr'); map('cGST', 'cGST');
-        map('bName', 'bName'); map('bAddr', 'bAddr'); map('bGST', 'bGST');
-        map('dispatch', 'logDispatch'); map('dest', 'logDest'); map('veh', 'logVehicle'); map('ref', 'logRef');
+        const gv = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+        const sp = (pId, val) => { const el = document.getElementById('p-'+pId); if(el) el.innerText = val; };
 
-        let rows = "";
+        // Format date
+        let rawDate = gv('invDate');
+        let dateStr = rawDate;
+        if (rawDate) {
+            const d = new Date(rawDate);
+            dateStr = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' }).replace(/ /g, '-');
+        }
+
+        sp('invNo', gv('invNo'));
+        sp('invDate', dateStr);
+        sp('delNote', gv('logDelNote'));
+        sp('payMode', gv('logPayMode'));
+        sp('cName', gv('cName'));
+        sp('cAddr', gv('cAddr'));
+        sp('cGST', gv('cGST'));
+        sp('cState', gv('cState'));
+        sp('bName', gv('bName'));
+        sp('bAddr', gv('bAddr'));
+        sp('bGST', gv('bGST'));
+        sp('bState', gv('bState'));
+        sp('dispatch', gv('logDispatch'));
+        sp('dest', gv('logDest'));
+        sp('veh', gv('logVehicle'));
+        sp('ref', gv('logRef'));
+        sp('buyerOrder', gv('logBuyerOrder'));
+        sp('dispThrough', gv('logDispThrough'));
+
+        // Items
+        let rows = '';
+        let sub = 0;
         invItems.forEach((item, i) => {
-            rows += `<tr><td>${i+1}</td><td>${item.desc}</td><td>${item.hsn}</td><td>${item.qty}</td><td>${item.rate}</td><td>${item.per}</td><td align="right">${(item.qty*item.rate).toFixed(2)}</td></tr>`;
+            const amt = item.qty * item.rate;
+            sub += amt;
+            rows += `<tr>
+                <td class="center">${i+1}</td>
+                <td>${item.desc}</td>
+                <td class="center">${item.hsn}</td>
+                <td class="num">${item.qty} ${item.per}</td>
+                <td class="num">${item.rate.toFixed(2)}</td>
+                <td class="center">${item.per}</td>
+                <td class="num">${amt.toFixed(2)}</td>
+            </tr>`;
         });
+        // Add blank rows for padding
+        for (let i = invItems.length; i < 5; i++) {
+            rows += `<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+        }
+
+        let cgst = sub * 0.09;
+        let sgst = sub * 0.09;
+        let rawTotal = sub + cgst + sgst;
+        let rounded = Math.round(rawTotal);
+        let roundOff = rounded - rawTotal;
+
+        // Sub-total rows inside items table footer
         document.getElementById('p-itemsBody').innerHTML = rows;
-        document.getElementById('p-grand').innerText = document.getElementById('lblTotal').innerText;
+        document.getElementById('p-itemsFoot').innerHTML = `
+            <tr>
+                <td colspan="2" style="text-align:right; font-size:7.5pt; color:#555;">Output CGST@9%</td>
+                <td></td><td></td><td></td><td></td>
+                <td class="num">${cgst.toFixed(2)}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:right; font-size:7.5pt; color:#555;">Output SGST@9%</td>
+                <td></td><td></td><td></td><td></td>
+                <td class="num">${sgst.toFixed(2)}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:right; font-size:7.5pt; color:#555;">Round Off</td>
+                <td></td><td></td><td></td><td></td>
+                <td class="num">${roundOff >= 0 ? '' : '-'}${Math.abs(roundOff).toFixed(2)}</td>
+            </tr>
+            <tr style="font-weight:bold;">
+                <td colspan="2" style="text-align:right;">Total</td>
+                <td></td><td></td><td></td><td></td>
+                <td class="num">₹ ${rounded.toFixed(2)}</td>
+            </tr>
+        `;
+
+        // Amount in words
+        sp('amtWords', numberToWords(rounded));
+
+        // GST summary table
+        // Group by HSN
+        let hsnMap = {};
+        invItems.forEach(item => {
+            if (!hsnMap[item.hsn]) hsnMap[item.hsn] = 0;
+            hsnMap[item.hsn] += item.qty * item.rate;
+        });
+        let gstRows = '';
+        let totalTaxable = 0, totalCGST = 0, totalSGST = 0;
+        Object.entries(hsnMap).forEach(([hsn, taxable]) => {
+            let c = taxable * 0.09, s = taxable * 0.09;
+            totalTaxable += taxable; totalCGST += c; totalSGST += s;
+            gstRows += `<tr>
+                <td class="left">${hsn}</td>
+                <td>${taxable.toFixed(2)}</td>
+                <td>9%</td><td>${c.toFixed(2)}</td>
+                <td>9%</td><td>${s.toFixed(2)}</td>
+                <td>${(c+s).toFixed(2)}</td>
+            </tr>`;
+        });
+        document.getElementById('p-gstBody').innerHTML = gstRows;
+        document.getElementById('p-gstFoot').innerHTML = `
+            <tr style="font-weight:bold;">
+                <td class="left">Total</td>
+                <td>${totalTaxable.toFixed(2)}</td>
+                <td></td><td>${totalCGST.toFixed(2)}</td>
+                <td></td><td>${totalSGST.toFixed(2)}</td>
+                <td>${(totalCGST+totalSGST).toFixed(2)}</td>
+            </tr>
+        `;
+
+        // Tax in words
+        sp('taxWords', numberToWords(totalCGST + totalSGST) + ' paise Only');
+
         window.print();
     }
 
-    // Initialize with one row
+    function processPhoto(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.cssText = 'width:100%;border-radius:8px;';
+            document.getElementById('gallery').appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Initialize
     addRow();
 </script>
 </body>
